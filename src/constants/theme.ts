@@ -1,4 +1,4 @@
-const COLORS = {
+const COLOR = {
   black: "#000000",
   white: "#FFFFFF",
   blue: "#3B82F6",
@@ -50,4 +50,4 @@ const SHADOWS = {
   },
 };
 
-export { COLORS, FONT, SIZES, SHADOWS };
+export { COLOR, FONT, SIZES, SHADOWS };

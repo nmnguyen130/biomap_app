@@ -2,9 +2,9 @@ import { useState } from "react";
 import { View, FlatList, Modal, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import ProvinceTag from "./ProvinceTag";
-import Input from "./Input";
 import Button from "./Button";
 import { provinces } from "@/constants/data/ProvincesData";
+import { AuthInput } from "./auth";
 
 interface Props {
   isVisible: boolean;
@@ -48,9 +48,9 @@ const CheckList: React.FC<Props> = ({ isVisible, onClose, provincesList }) => {
       />
       <Modal transparent visible={isVisible} animationType="fade">
         <View className="flex-1 justify-center items-center mx-8 my-16 bg-white rounded-xl">
-          <Input
+          <AuthInput
             leftIcon={<MaterialIcons name="search" size={24} color="black" />}
-            placeholder="Nhập tỉnh muốn tìm kiếm"
+            label="Nhập tỉnh muốn tìm kiếm"
             onChangeText={(value) => setSearchContent(value)}
           />
 

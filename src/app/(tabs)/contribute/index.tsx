@@ -5,7 +5,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { ContributedList } from "@/components/contribute";
-import Colors from "@/constants/theme";
+import { COLOR } from "@/constants";
 import { getNumberFormWithStatus } from "@/api/FormApi";
 
 const UserContributed = () => {
@@ -37,7 +37,7 @@ const UserContributed = () => {
           className="border border-darker_primary rounded-full me-6 p-2"
           onPress={() => router.replace("(modals)/form")}
         >
-          <Ionicons name="add" size={24} color={Colors.darker_primary} />
+          <Ionicons name="add" size={24} color={COLOR.darker_primary} />
         </TouchableOpacity>
       </View>
 
@@ -47,7 +47,7 @@ const UserContributed = () => {
             className="px-1"
             name="upload"
             size={24}
-            color={Colors.blue}
+            color={COLOR.blue}
           />
           <Text className="text-blue-500 pe-3">Tổng: {counts.total}</Text>
         </View>
@@ -56,7 +56,7 @@ const UserContributed = () => {
           <MaterialCommunityIcons
             name="checkbox-marked-circle-outline"
             size={24}
-            color={Colors.lighter_primary}
+            color={COLOR.lighter_primary}
           />
           <Text className="text-lighter_primary">{counts.approved}</Text>
         </View>
@@ -65,7 +65,7 @@ const UserContributed = () => {
           <MaterialCommunityIcons
             name="progress-clock"
             size={24}
-            color={Colors.orange}
+            color={COLOR.orange}
           />
           <Text className="text-yellow-500">{counts.pending}</Text>
         </View>

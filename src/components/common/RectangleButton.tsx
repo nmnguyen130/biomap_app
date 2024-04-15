@@ -27,11 +27,11 @@ export default function RectangleButton(
   return (
     <Pressable
       android_ripple={{
-        color: "#7b99fd",
+        color: "#3aba45",
         borderless: false,
         foreground: true,
       }}
-      className={`py-5 px-3 mx-8 relative ${
+      className={`py-5 px-3 mx-6 relative ${
         secondary ? "bg-white" : "bg-primary"
       } rounded-2xl overflow-hidden shadow-lg shadow-slate-300 flex-row justify-center items-center ${className}`}
       {...otherProps}

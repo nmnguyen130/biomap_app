@@ -1,33 +1,29 @@
 import { Tabs } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import Colors from "@/constants/theme";
-
-// Define a union type for the allowed icon names
-type IconName =
-  | "paw-outline"
-  | "head-lightbulb-outline"
-  | "card-account-details-outline";
+import { COLOR, FONT } from "@/constants";
+import NavBarIcon from "@/components/layout/NavBarIcon";
 
 interface TabConfig {
   name: string;
   title: string;
-  icon: IconName;
+  icon: React.ComponentProps<typeof FontAwesome>["name"];
 }
 
 const tabScreens: TabConfig[] = [
-  { name: "map", title: "Map", icon: "paw-outline" },
-  { name: "contribute", title: "Contribute", icon: "head-lightbulb-outline" },
-  { name: "profile", title: "Profile", icon: "card-account-details-outline" },
+  { name: "map", title: "Map", icon: "map-marker" },
+  { name: "contribute", title: "Contribute", icon: "commenting" },
+  { name: "profile", title: "Profile", icon: "vcard" },
 ];
 
 const Layout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary,
-        tabBarLabelStyle: { fontFamily: "PTSer" },
+        tabBarActiveTintColor: COLOR.primary,
+        tabBarLabelStyle: { fontFamily: FONT.bold, paddingBottom: 2 },
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       {tabScreens.map((screen, index) => (
@@ -36,10 +32,11 @@ const Layout = () => {
           name={screen.name}
           options={{
             title: screen.title,
-            tabBarIcon: ({ size, color }) => (
-              <MaterialCommunityIcons
+            tabBarIcon: ({ color, focused }) => (
+              <NavBarIcon
+                focused={focused}
+                label={screen.title}
                 name={screen.icon}
-                size={size}
                 color={color}
               />
             ),

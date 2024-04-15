@@ -1,20 +1,18 @@
-import { useRef, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
-import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import { useRef } from "react";
+import { View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-import { Button, Input } from "@/components";
 import { useAuth } from "@/hooks/auth/AuthContext";
+import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
+
 import Dialog, { MessageType } from "@/components/Dialog";
+import { AuthInput, AuthPassword } from "@/components/auth";
+import BiomapLogo from "@/components/common/BiomapLogo";
+import { FontText, PressableText, RectangleButton } from "@/components/common";
 
-const SignupScreen = () => {
-  const [isShow, setIsShow] = useState(false);
-  const [isShowConfirm, setIsShowConfirm] = useState(false);
-
-  const [dialogType, setDialogType] = useState(MessageType.Success);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isShowDialog, setIsShowDialog] = useState(false);
+const SignupForm = () => {
+  const { displayMode, isOpen, modalContent, show, hide } = useModal();
 
   const { register } = useAuth();
 
@@ -30,10 +28,11 @@ const SignupScreen = () => {
       !passwordRef.current ||
       !confirmPassRef.current
     ) {
-      setDialogType(MessageType.Alert);
-      setTitle("Đăng ký");
-      setContent("Vui lòng điền đầy đủ thông tin!");
-      setIsShowDialog(true);
+      show(DisplayMode.Dialog, {
+        dialogType: MessageType.Alert,
+        title: "Đăng ký",
+        content: "Vui lòng điền đầy đủ thông tin!",
+      });
       return;
     }
 
@@ -44,119 +43,98 @@ const SignupScreen = () => {
     );
 
     if (!response.success) {
-      setDialogType(MessageType.Error);
-      setTitle("Đăng ký thất bại!");
-      setContent(response.msg as string);
-      setIsShowDialog(true);
+      show(DisplayMode.Dialog, {
+        dialogType: MessageType.Error,
+        title: "Đăng ký thất bại!",
+        content: response.msg,
+      });
     }
   };
 
   return (
     <View className="flex-1 bg-white p-7">
       <View className="flex-1 items-center justify-center">
-        <Image
-          resizeMode="cover"
-          source={require("../../../assets/paws-logo.png")}
-          className="w-[132px] h-1/6 my-4"
-        />
+        <BiomapLogo className="my-8" />
 
-        <Text className="text-4xl font-bold text-lighter_primary mb-10">
-          Bio
-          <Text className="text-4xl font-bold text-yellow-500">Map</Text>
-        </Text>
-
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons
-              name="account-outline"
-              size={24}
-              color="#128F51"
-            />
-          }
-          placeholder="Tên tài khoản"
-          onChangeText={(value) => (usernameRef.current = value)}
-        />
-
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons
-              name="email-outline"
-              size={22}
-              color="#128F51"
-            />
-          }
-          placeholder="Email"
-          onChangeText={(value) => (emailRef.current = value)}
-        />
-
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons name="lock" size={22} color="#128F51" />
-          }
-          placeholder="Mật khẩu"
-          onChangeText={(value) => (passwordRef.current = value)}
-          secureTextEntry={!isShow}
-          rightIcon={
-            <TouchableOpacity
-              className="absolute top-[13px] right-3"
-              onPress={() => {
-                setIsShow(!isShow);
-              }}
-            >
-              <Octicons
-                name={isShow ? "eye" : "eye-closed"}
-                size={22}
-                color="#BDBDBD"
+        <View className="w-full">
+          <AuthInput
+            leftIcon={
+              <MaterialCommunityIcons
+                name="account-outline"
+                size={24}
+                color="#128F51"
               />
-            </TouchableOpacity>
-          }
-        />
+            }
+            label="Tên tài khoản"
+            onChangeText={(value) => (usernameRef.current = value)}
+          />
 
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons
-              name="lock-check"
-              size={22}
-              color="#128F51"
-            />
-          }
-          placeholder="Xác nhận mật khẩu"
-          onChangeText={(value) => (confirmPassRef.current = value)}
-          secureTextEntry={!isShowConfirm}
-          rightIcon={
-            <TouchableOpacity
-              className="absolute top-[13px] right-3"
-              onPress={() => {
-                setIsShowConfirm(!isShowConfirm);
-              }}
-            >
-              <Octicons
-                name={isShowConfirm ? "eye" : "eye-closed"}
+          <AuthInput
+            leftIcon={
+              <MaterialCommunityIcons
+                name="email-outline"
                 size={22}
-                color="#BDBDBD"
+                color="#128F51"
               />
-            </TouchableOpacity>
-          }
-        />
+            }
+            label="Email"
+            onChangeText={(value) => (emailRef.current = value)}
+          />
 
-        <Button onPress={handleRegister} value="Đăng Ký" />
+          <AuthPassword
+            leftIcon={
+              <MaterialCommunityIcons name="lock" size={22} color="#128F51" />
+            }
+            label="Mật khẩu"
+            onChangeText={(value) => (passwordRef.current = value)}
+          />
 
-        <View className="flex-row justify-center items-center mt-6">
-          <Text>Đã có tài khoản? </Text>
-          <TouchableOpacity onPress={() => router.replace("(auth)/login")}>
-            <Text className="text-lighter_primary">Đăng nhập</Text>
-          </TouchableOpacity>
+          <AuthPassword
+            leftIcon={
+              <MaterialCommunityIcons
+                name="lock-check"
+                size={22}
+                color="#128F51"
+              />
+            }
+            label="Xác nhận mật khẩu"
+            onChangeText={(value) => (confirmPassRef.current = value)}
+          />
+
+          <View className="mt-3">
+            <RectangleButton text="Đăng ký" onPress={handleRegister} />
+          </View>
+
+          <View className="flex-row justify-center items-center mt-6">
+            <FontText>Đã có tài khoản? </FontText>
+            <PressableText
+              className="text-lighter_primary"
+              onPress={() => router.replace("(auth)/login")}
+            >
+              Đăng nhập
+            </PressableText>
+          </View>
         </View>
       </View>
 
-      <Dialog
-        dialogType={dialogType}
-        isVisible={isShowDialog}
-        onClose={() => setIsShowDialog(false)}
-        title={title}
-        content={content}
-      />
+      {isOpen && displayMode === DisplayMode.Dialog && (
+        <Dialog
+          dialogType={modalContent.dialogType}
+          isVisible={isOpen}
+          onClose={hide}
+          title={modalContent.title}
+          content={modalContent.content}
+        />
+      )}
     </View>
+  );
+};
+
+const SignupScreen = () => {
+  return (
+    <ModalProvider>
+      <SignupForm />
+    </ModalProvider>
   );
 };
 

@@ -5,12 +5,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function useFontLoader() {
   const [loaded, error] = useFonts({
-    AirBnbLight: require("../assets/fonts/AirbnbCereal_W_Lt.otf"),
-    AirBnbBook: require("../assets/fonts/AirbnbCereal_W_Bk.otf"),
-    AirBnbMedium: require("../assets/fonts/AirbnbCereal_W_Md.otf"),
-    AirBnbBold: require("../assets/fonts/AirbnbCereal_W_Bd.otf"),
-    AirBnbExtrabold: require("../assets/fonts/AirbnbCereal_W_XBd.otf"),
-    AirBnbBlack: require("../assets/fonts/AirbnbCereal_W_Blk.otf"),
+    AirBnbLight: require("@assets/fonts/AirbnbCereal_W_Lt.otf"),
+    AirBnbBook: require("@assets/fonts/AirbnbCereal_W_Bk.otf"),
+    AirBnbMedium: require("@assets/fonts/AirbnbCereal_W_Md.otf"),
+    AirBnbBold: require("@assets/fonts/AirbnbCereal_W_Bd.otf"),
+    AirBnbExtrabold: require("@assets/fonts/AirbnbCereal_W_XBd.otf"),
+    AirBnbBlack: require("@assets/fonts/AirbnbCereal_W_Blk.otf"),
     ...FontAwesome.font,
   });
 

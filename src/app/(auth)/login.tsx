@@ -1,19 +1,22 @@
 import { useRef, useState } from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import { View, Switch } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-import { Button, Dialog, Input } from "@/components";
 import { useAuth } from "@/hooks/auth/AuthContext";
+import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
+
+import { Dialog } from "@/components";
 import { MessageType } from "@/components/Dialog";
+import BiomapLogo from "@/components/common/BiomapLogo";
+import { AuthInput, AuthPassword } from "@/components/auth";
+import { FontText, PressableText, RectangleButton } from "@/components/common";
+import { COLOR } from "@/constants";
 
-const LoginScreen = () => {
-  const [isShow, setIsShow] = useState(false);
+const LoginForm = () => {
+  const { displayMode, isOpen, modalContent, show, hide } = useModal();
 
-  const [dialogType, setDialogType] = useState(MessageType.Success);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [isShowDialog, setIsShowDialog] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { login } = useAuth();
 
@@ -22,94 +25,93 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (!emailRef.current || !passwordRef.current) {
-      setDialogType(MessageType.Alert);
-      setTitle("Đăng nhập");
-      setContent("Vui lòng điền đầy đủ thông tin!");
-      setIsShowDialog(true);
+      show(DisplayMode.Dialog, {
+        dialogType: MessageType.Alert,
+        title: "Đăng nhập",
+        content: "Vui lòng điền đầy đủ thông tin!",
+      });
       return;
     }
 
     const response = await login(emailRef.current, passwordRef.current);
 
     if (!response.success) {
-      setDialogType(MessageType.Error);
-      setTitle("Đăng nhập thất bại!");
-      setContent(response.msg as string);
-      setIsShowDialog(true);
+      show(DisplayMode.Dialog, {
+        dialogType: MessageType.Error,
+        title: "Đăng nhập thất bại!",
+        content: response.msg,
+      });
     }
   };
 
   return (
     <View className="flex-1 bg-white p-6">
       <View className="flex-1 items-center justify-center">
-        <Image
-          source={require("@assets/paws-logo.png")}
-          className="w-[132px] h-1/6 my-4"
-        />
-        <Text className="text-4xl font-bold text-lighter_primary mb-10">
-          Bio
-          <Text className="text-4xl font-bold text-yellow-500">Map</Text>
-        </Text>
+        <BiomapLogo className="my-8" />
 
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons name="email" size={22} color="#128F51" />
-          }
-          placeholder="Email"
-          onChangeText={(value) => (emailRef.current = value)}
-        />
+        <View className="w-full">
+          <AuthInput
+            leftIcon={
+              <MaterialCommunityIcons name="email" size={22} color="#128F51" />
+            }
+            label="Email"
+            onChangeText={(value) => (emailRef.current = value)}
+          />
 
-        <Input
-          leftIcon={
-            <MaterialCommunityIcons name="lock" size={22} color="#128F51" />
-          }
-          placeholder="Mật khẩu"
-          onChangeText={(value) => (passwordRef.current = value)}
-          secureTextEntry={!isShow}
-          rightIcon={
-            <TouchableOpacity
-              className="absolute top-[13px] right-3"
-              onPress={() => {
-                setIsShow(!isShow);
-              }}
-            >
-              <Octicons
-                name={isShow ? "eye" : "eye-closed"}
-                size={22}
-                color="#BDBDBD"
-              />
-            </TouchableOpacity>
-          }
-        />
+          <AuthPassword
+            leftIcon={
+              <MaterialCommunityIcons name="lock" size={22} color="#128F51" />
+            }
+            label="Mật khẩu"
+            onChangeText={(value) => (passwordRef.current = value)}
+          />
 
-        <Button onPress={handleLogin} value="Đăng Nhập" />
-
-        <TouchableOpacity>
-          <Text className="text-lighter_primary my-3">Quên mật khẩu?</Text>
-        </TouchableOpacity>
-
-        <View className="w-11/12 bg-gray-200 h-px rounded-full justify-center items-center my-5">
-          <View className="bg-white w-[66px] h-6 items-center">
-            <Text className="text-gray-600">Hoặc</Text>
+          <View className="flex-row items-center -mt-3 mb-2">
+            <Switch
+              value={rememberMe}
+              onValueChange={() => setRememberMe((prev) => !prev)}
+              trackColor={{ true: COLOR.lighter_primary }}
+              thumbColor="white"
+            />
+            <FontText className="flex-1">Remember Me</FontText>
+            <PressableText className="text-right">Quên mật khẩu?</PressableText>
           </View>
-        </View>
 
-        <TouchableOpacity
-          className="w-9/12 bg-white p-3 mt-2 rounded-xl border-2 border-gray-200 items-center"
-          onPress={() => router.replace("(auth)/signup")}
-        >
-          <Text className="text-[16px]">Tạo tài khoản mới</Text>
-        </TouchableOpacity>
+          <RectangleButton text="Đăng nhập" onPress={handleLogin} />
+
+          <View className="self-center justify-center items-center w-11/12 bg-gray-200 h-px rounded-full my-8">
+            <View className="bg-white w-20 h-6">
+              <FontText className="text-center opacity-60">Hoặc</FontText>
+            </View>
+          </View>
+
+          <RectangleButton
+            text="Tạo tài khoản mới"
+            className="border-2 border-gray-200"
+            secondary
+            onPress={() => router.replace("(auth)/signup")}
+          />
+        </View>
       </View>
 
-      <Dialog
-        dialogType={dialogType}
-        isVisible={isShowDialog}
-        onClose={() => setIsShowDialog(false)}
-        title={title}
-        content={content}
-      />
+      {isOpen && displayMode === DisplayMode.Dialog && (
+        <Dialog
+          dialogType={modalContent.dialogType}
+          isVisible={isOpen}
+          onClose={hide}
+          title={modalContent.title}
+          content={modalContent.content}
+        />
+      )}
     </View>
+  );
+};
+
+const LoginScreen = () => {
+  return (
+    <ModalProvider>
+      <LoginForm />
+    </ModalProvider>
   );
 };
 
