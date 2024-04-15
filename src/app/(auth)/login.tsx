@@ -77,7 +77,11 @@ const LoginForm = () => {
             <PressableText className="text-right">Quên mật khẩu?</PressableText>
           </View>
 
-          <RectangleButton text="Đăng nhập" onPress={handleLogin} />
+          <RectangleButton
+            className="mx-6"
+            text="Đăng nhập"
+            onPress={handleLogin}
+          />
 
           <View className="self-center justify-center items-center w-11/12 bg-gray-200 h-px rounded-full my-8">
             <View className="bg-white w-20 h-6">
@@ -87,7 +91,7 @@ const LoginForm = () => {
 
           <RectangleButton
             text="Tạo tài khoản mới"
-            className="border-2 border-gray-200"
+            className="border-2 border-gray-200 mx-6"
             secondary
             onPress={() => router.replace("(auth)/signup")}
           />

@@ -31,7 +31,7 @@ export default function RectangleButton(
         borderless: false,
         foreground: true,
       }}
-      className={`py-5 px-3 mx-6 relative ${
+      className={`py-4 px-3 relative ${
         secondary ? "bg-white" : "bg-primary"
       } rounded-2xl overflow-hidden shadow-lg shadow-slate-300 flex-row justify-center items-center ${className}`}
       {...otherProps}

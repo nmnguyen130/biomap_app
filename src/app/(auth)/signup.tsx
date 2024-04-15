@@ -102,7 +102,11 @@ const SignupForm = () => {
           />
 
           <View className="mt-3">
-            <RectangleButton text="Đăng ký" onPress={handleRegister} />
+            <RectangleButton
+              className="mx-6"
+              text="Đăng ký"
+              onPress={handleRegister}
+            />
           </View>
 
           <View className="flex-row justify-center items-center mt-6">

@@ -42,7 +42,7 @@ const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
         data={getRenderInformation()}
         renderItem={({ item }) => (
           <View className="mx-1.5 my-2">
-            <Text className="font-bold text-lg" style={{ fontFamily: "PTSer" }}>
+            <Text className="font-bold text-lg">
               {item.id}: <Text className="font-normal">{item.content}</Text>
             </Text>
           </View>

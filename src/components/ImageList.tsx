@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, FlatList, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { DocumentData, doc, getDoc } from "@firebase/firestore";
 import { getDownloadURL, ref } from "@firebase/storage";
@@ -9,6 +9,7 @@ import Loader from "./Loader";
 import { useCreatureType } from "@/hooks/CreatureTypeContext";
 import { getURLFromCache, saveURLToCache } from "@/utils/storage";
 import { db, storage } from "@/utils/firebase";
+import { FontText } from "./common";
 
 interface Props {
   creatureList: DocumentData;
@@ -98,9 +99,11 @@ const ImageList: React.FC<Props> = ({ creatureList, provinceName }) => {
       {getSelectedCreatureData().length !== 0 ? (
         <FlatList
           data={getSelectedCreatureData()}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <TouchableOpacity
-              className="mx-4 my-2.5 pb-2.5 rounded-md items-center bg-primary"
+              className={`w-[48%] rounded-md items-center bg-primary my-2.5 pb-2.5 ${
+                index % 2 === 0 ? "me-auto" : "ms-auto"
+              }`}
               onPress={() => {
                 router.push({
                   pathname: "(data)/[creatureName]",
@@ -114,16 +117,16 @@ const ImageList: React.FC<Props> = ({ creatureList, provinceName }) => {
             >
               <Image
                 source={{ uri: item.imageURL }}
-                style={{ height: 200, width: "100%", borderRadius: 6 }}
+                style={{ width: "100%", aspectRatio: 4 / 3, borderRadius: 6 }}
               />
-              <Text className="text-base pt-1.5 text-yellow-300">
+              <FontText className="text-base pt-1.5 text-yellow-300">
                 {item.name}
-              </Text>
+              </FontText>
             </TouchableOpacity>
           )}
-          keyExtractor={(item) => item.id}
+          numColumns={2}
           ItemSeparatorComponent={() => (
-            <View className="h-0.5 mx-4 bg-gray-300"></View>
+            <View className="h-0.5 bg-gray-300"></View>
           )}
         />
       ) : (

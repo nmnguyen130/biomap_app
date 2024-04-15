@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,6 +8,7 @@ import { DocumentData, getDocs, query, where } from "@firebase/firestore";
 import { provinceRef } from "@/utils/firebase";
 import { ImageList, Loader, ToggleButton } from "@/components";
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
+import { FontText, PressableText } from "@/components/common";
 
 const CreatureModal = () => {
   const { provinceName } = useLocalSearchParams<{ provinceName: string }>();
@@ -31,16 +32,11 @@ const CreatureModal = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <View className="flex-1 bg-white mx-5">
-        <View className="flex flex-row items-center justify-center p-1">
-          <Text className="text-2xl">{provinceName}</Text>
-          <TouchableOpacity
-            onPress={() => {
-              router.back();
-            }}
-            className="absolute top-[10px] right-4"
-          >
+        <View className="flex-row items-center justify-center p-1 pb-2">
+          <FontText className="text-2xl me-auto">{provinceName}</FontText>
+          <PressableText onPress={() => router.back()}>
             <Ionicons name="close" size={24} color="black" />
-          </TouchableOpacity>
+          </PressableText>
         </View>
 
         {Object.keys(creatureList).length !== 0 ? (
