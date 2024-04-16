@@ -73,3 +73,40 @@ export const getDetailOfAllCreatures = async (
 
   return results.filter(Boolean);
 };
+
+export const getCreatureInfor = async (creatureName: string, type: string) => {
+  try {
+    const creatureRef = doc(db, type, creatureName);
+    const snapshot = await getDoc(creatureRef);
+    const creatureData = snapshot.data();
+
+    if (!creatureData) {
+      console.warn("Creature data not found for:", creatureName);
+    } else {
+      creatureData.id = creatureName;
+
+      const cacheImageURL = await getURLFromCache(`URL_${creatureName}`);
+      if (cacheImageURL) {
+        creatureData.image_url = cacheImageURL.imageURL;
+      }
+
+      return creatureData;
+    }
+  } catch (error) {
+    console.error("Error fetching creature information:", error);
+  }
+};
+
+export const getProvincesContainCreature = async (
+  creatureName: string,
+  type: string
+): Promise<string[] | undefined> => {
+  try {
+    const field = type === "Animals" ? "animal_list" : "plant_list";
+    const q = query(provinceRef, where(field, "array-contains", creatureName));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => doc.data().name as string);
+  } catch (error) {
+    console.error("Error fetching provinces contain creature:", error);
+  }
+};
