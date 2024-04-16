@@ -8,9 +8,13 @@ import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
 import { Dialog } from "@/components";
 import { MessageType } from "@/components/Dialog";
-import BiomapLogo from "@/components/common/BiomapLogo";
 import { AuthInput, AuthPassword } from "@/components/auth";
-import { FontText, PressableText, RectangleButton } from "@/components/common";
+import {
+  BiomapLogo,
+  FontText,
+  PressableText,
+  RectangleButton,
+} from "@/components/common";
 import { COLOR } from "@/constants";
 
 const LoginForm = () => {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { Redirect } from "expo-router";
-import { Loader } from "@/components";
+import { Loader } from "@/components/common";
 
 const SplashScreen = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);

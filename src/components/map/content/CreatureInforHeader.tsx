@@ -5,13 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
   creatureData: DocumentData;
-  provinceName?: string;
 }
 
-const CreatureInforHeader: React.FC<Props> = ({
-  creatureData,
-  provinceName,
-}) => {
+const CreatureInforHeader: React.FC<Props> = ({ creatureData }) => {
   return (
     <View className="flex-row items-center justify-between m-2">
       <TouchableOpacity

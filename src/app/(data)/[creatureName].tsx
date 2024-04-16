@@ -11,16 +11,15 @@ import {
   where,
 } from "firebase/firestore";
 
-import { Loader } from "@/components";
-import { CreatureInforBody, CreatureInforHeader } from "@/components/content";
+import { Loader } from "@/components/common";
+import { CreatureInforBody, CreatureInforHeader } from "@/components/map";
 import { db, provinceRef } from "@/utils/firebase";
 import { getURLFromCache } from "@/utils/storage";
 
 const CreatureInformation = () => {
-  const { creatureName, type, provinceName } = useLocalSearchParams<{
+  const { creatureName, type } = useLocalSearchParams<{
     creatureName: string;
     type: string;
-    provinceName: string;
   }>();
 
   const [creatureInfor, setCreatureInfor] = useState<DocumentData>({});
@@ -92,10 +91,7 @@ const CreatureInformation = () => {
     <SafeAreaView style={{ flex: 1 }}>
       {Object.keys(creatureInfor).length > 0 ? (
         <View className="flex-1 p-[10px]">
-          <CreatureInforHeader
-            creatureData={creatureInfor}
-            provinceName={provinceName}
-          />
+          <CreatureInforHeader creatureData={creatureInfor} />
           <CreatureInforBody creatureData={creatureInfor} />
         </View>
       ) : (

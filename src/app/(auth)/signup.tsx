@@ -8,8 +8,12 @@ import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
 import Dialog, { MessageType } from "@/components/Dialog";
 import { AuthInput, AuthPassword } from "@/components/auth";
-import BiomapLogo from "@/components/common/BiomapLogo";
-import { FontText, PressableText, RectangleButton } from "@/components/common";
+import {
+  BiomapLogo,
+  FontText,
+  PressableText,
+  RectangleButton,
+} from "@/components/common";
 
 const SignupForm = () => {
   const { displayMode, isOpen, modalContent, show, hide } = useModal();
