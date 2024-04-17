@@ -1,10 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, Switch } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
+import {
+  saveLoginInfoToCache,
+  getLoginInfoFromCache,
+  clearLoginInfoFromCache,
+} from "@/utils/storage";
 
 import Dialog, { MessageType } from "@/components/common/modal/Dialog";
 import { AuthInput, AuthPassword } from "@/components/auth";
@@ -18,13 +23,24 @@ import { COLOR } from "@/constants";
 
 const LoginForm = () => {
   const { displayMode, isOpen, modalContent, show, hide } = useModal();
+  const { login } = useAuth();
 
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { login } = useAuth();
-
   const emailRef = useRef("");
   const passwordRef = useRef("");
+
+  useEffect(() => {
+    const loadLoginInfo = async () => {
+      const loginInfo = await getLoginInfoFromCache();
+      if (loginInfo) {
+        emailRef.current = loginInfo.email;
+        passwordRef.current = loginInfo.password;
+        setRememberMe(true);
+      }
+    };
+    loadLoginInfo();
+  }, []);
 
   const handleLogin = async () => {
     if (!emailRef.current || !passwordRef.current) {
@@ -44,6 +60,12 @@ const LoginForm = () => {
         title: "Đăng nhập thất bại!",
         content: response.msg,
       });
+    } else {
+      if (rememberMe) {
+        await saveLoginInfoToCache(emailRef.current, passwordRef.current);
+      } else {
+        clearLoginInfoFromCache();
+      }
     }
   };
 
@@ -59,6 +81,7 @@ const LoginForm = () => {
             }
             label="Email"
             onChangeText={(value) => (emailRef.current = value)}
+            defaultValue={emailRef.current}
           />
 
           <AuthPassword
@@ -67,6 +90,7 @@ const LoginForm = () => {
             }
             label="Mật khẩu"
             onChangeText={(value) => (passwordRef.current = value)}
+            defaultValue={passwordRef.current}
           />
 
           <View className="flex-row items-center -mt-3 mb-2">

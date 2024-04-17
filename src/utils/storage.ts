@@ -1,5 +1,40 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Save Login Infor
+export const saveLoginInfoToCache = async (email: string, password: string) => {
+  try {
+    await AsyncStorage.setItem(
+      "loginInfo",
+      JSON.stringify({ email, password })
+    );
+  } catch (error) {
+    console.error("Error saving login information to AsyncStorage:", error);
+  }
+};
+
+export const getLoginInfoFromCache = async () => {
+  try {
+    const loginInfo = await AsyncStorage.getItem("loginInfo");
+    return loginInfo ? JSON.parse(loginInfo) : null;
+  } catch (error) {
+    console.error(
+      "Error retrieving login information from AsyncStorage:",
+      error
+    );
+    return null;
+  }
+};
+
+export const clearLoginInfoFromCache = async () => {
+  try {
+    await AsyncStorage.removeItem("loginInfo");
+    // console.log("Login information cleared successfully.");
+  } catch (error) {
+    console.error("Error clearing login information from cache:", error);
+  }
+};
+
+// Save Image URL
 export const saveURLToCache = async (key: string, URL: string) => {
   try {
     await AsyncStorage.setItem(key, URL);
