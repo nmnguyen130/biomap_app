@@ -5,8 +5,8 @@ import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
-import { CheckList, Dialog, ImagePickerModal } from "@/components";
-import { Form } from "@/components/contribute";
+import { Dialog, ImagePickerModal } from "@/components/common";
+import { CheckList, Form } from "@/components/contribute";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
 const NewContributeForm = () => {

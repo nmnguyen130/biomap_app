@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { MessageType } from "@/components/Dialog";
+import { MessageType } from "@/components/common/modal/Dialog";
 
 interface ModalContent {
   dialogType: MessageType;

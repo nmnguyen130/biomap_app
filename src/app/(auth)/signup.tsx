@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import { useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
-import Dialog, { MessageType } from "@/components/Dialog";
+import Dialog, { MessageType } from "@/components/common/modal/Dialog";
 import { AuthInput, AuthPassword } from "@/components/auth";
 import {
   BiomapLogo,

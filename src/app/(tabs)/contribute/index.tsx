@@ -7,6 +7,7 @@ import { router } from "expo-router";
 import { ContributedList } from "@/components/contribute";
 import { COLOR } from "@/constants";
 import { getNumberFormWithStatus } from "@/api/FormApi";
+import { FontText } from "@/components/common";
 
 const UserContributed = () => {
   const [counts, setCounts] = useState({ total: 0, approved: 0, pending: 0 });
@@ -32,7 +33,7 @@ const UserContributed = () => {
       style={{ flex: 1, backgroundColor: "white", paddingHorizontal: 8 }}
     >
       <View className="flex-row items-center justify-between my-2">
-        <Text className="text-3xl ms-6">Đóng góp của bạn</Text>
+        <FontText className="text-3xl ms-6">Đóng góp của bạn</FontText>
         <TouchableOpacity
           className="border border-darker_primary rounded-full me-6 p-2"
           onPress={() => router.replace("(modals)/form")}

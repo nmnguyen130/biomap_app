@@ -3,9 +3,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
-import { ToggleButton } from "@/components";
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
-import { FontText, PressableText } from "@/components/common";
+import { FontText, PressableText, ToggleButton } from "@/components/common";
 import { ImageList } from "@/components/map";
 
 const CreatureModal = () => {

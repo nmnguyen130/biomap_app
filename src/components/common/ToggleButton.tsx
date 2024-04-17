@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import { useCreatureType } from "@/hooks/CreatureTypeContext";
-import { RectangleButton } from "./common";
+import RectangleButton from "./RectangleButton";
 import { COLOR } from "@/constants";
 
 const ToggleButton = () => {

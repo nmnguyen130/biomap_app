@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { View, FlatList, Modal, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+
+import { AuthInput } from "../auth";
 import ProvinceTag from "./ProvinceTag";
-import Button from "./Button";
 import { provinces } from "@/constants/data/ProvincesData";
-import { AuthInput } from "./auth";
+import { RectangleButton } from "../common";
 
 interface Props {
   isVisible: boolean;
@@ -69,9 +70,11 @@ const CheckList: React.FC<Props> = ({ isVisible, onClose, provincesList }) => {
             initialNumToRender={20}
           />
 
-          <View className="w-full items-center my-2">
-            <Button width="half" onPress={handleFinish} value="Xong" />
-          </View>
+          <RectangleButton
+            className="w-1/2 my-2"
+            onPress={handleFinish}
+            text="Xong"
+          />
         </View>
       </Modal>
     </>

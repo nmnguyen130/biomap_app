@@ -4,12 +4,13 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 
-import { Button, ToggleButton } from "@/components";
 import { useAuth } from "@/hooks/auth/AuthContext";
-import { useCreatureType } from "@/hooks/CreatureTypeContext";
-import { addFormData } from "@/api/FormApi";
-import { MessageType } from "../Dialog";
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
+import { useCreatureType } from "@/hooks/CreatureTypeContext";
+
+import { addFormData } from "@/api/FormApi";
+import { MessageType } from "../common/modal/Dialog";
+import { RectangleButton, ToggleButton } from "../common";
 
 interface Props {
   openModal: () => void;
@@ -29,7 +30,7 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
   const behavior = useRef("");
   const habitat = useRef("");
 
-  const provincesText = dataList.map((item) => item).join(", ");
+  const provincesText = dataList.join(", ");
 
   const options = { timeZone: "Asia/Ho_Chi_Minh", hour12: false };
 
@@ -151,9 +152,9 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
         </TouchableOpacity>
 
         <View className="mx-2">
-          <Button
+          <RectangleButton
             onPress={handlerSend}
-            value={isLoading ? "Đang gửi..." : "Gửi"}
+            text={isLoading ? "Đang gửi..." : "Gửi"}
             disabled={isLoading}
           />
         </View>
