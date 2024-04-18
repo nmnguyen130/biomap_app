@@ -11,7 +11,10 @@ const SearchResults = (props: SearchResultsProps) => {
   const { type, searchResultArray, className, ...otherProps } = props;
 
   return (
-    <View className={`flex-row bg-white mx-2 ${className}`} {...otherProps}>
+    <View
+      className={`flex-row bg-white mx-2 rounded-xl ${className}`}
+      {...otherProps}
+    >
       <FlatList
         contentContainerStyle={{ paddingBottom: 4 }}
         data={searchResultArray}

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { DocumentData } from "@firebase/firestore";
 
 import { useAuth } from "@/hooks/auth/AuthContext";
-import { getFormsData } from "@/api/FormApi";
+import { getFormsDataByUserId } from "@/api/FormApi";
 
 const ContributedList = () => {
   const { user } = useAuth();
@@ -13,7 +14,7 @@ const ContributedList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getFormsData(user?.userId as string);
+        const data = await getFormsDataByUserId(user?.userId as string);
         setFormsData(data);
       } catch (error) {
         console.error("Error fetching counts:", error);
@@ -38,7 +39,15 @@ const ContributedList = () => {
               </View>
             </View>
             <View className="bg-lighter_primary rounded-full absolute right-4 top-6 w-12 h-12 items-center justify-center">
-              <TouchableOpacity className="bg-primary items-center justify-center h-11 w-11 rounded-full">
+              <TouchableOpacity
+                className="bg-primary items-center justify-center h-11 w-11 rounded-full"
+                onPress={() => {
+                  router.push({
+                    pathname: "(tabs)/contribute/formData",
+                    params: { formId: item.formId },
+                  });
+                }}
+              >
                 <MaterialIcons
                   name="keyboard-double-arrow-right"
                   size={24}

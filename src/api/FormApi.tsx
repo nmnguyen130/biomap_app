@@ -1,5 +1,13 @@
-import { formRef, storage } from "@/utils/firebase";
-import { addDoc, getDocs, query, updateDoc, where } from "@firebase/firestore";
+import { db, formRef, storage } from "@/utils/firebase";
+import {
+  addDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "@firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "@firebase/storage";
 
 const tableName = "Forms";
@@ -31,12 +39,28 @@ export const getNumberFormWithStatus = async (status?: string) => {
   }
 };
 
-export const getFormsData = async (userId: string) => {
+export const getFormDataById = async (formID: string) => {
+  try {
+    const formDoc = doc(db, tableName, formID);
+    const snapshot = await getDoc(formDoc);
+    const forms = snapshot.data();
+
+    return forms;
+  } catch (error) {
+    console.log((error as Error).message);
+    return {};
+  }
+};
+
+export const getFormsDataByUserId = async (userId: string) => {
   try {
     const q = query(formRef, where("userId", "==", userId));
     const snapshot = await getDocs(q);
 
-    const forms = snapshot.docs.map((doc) => doc.data());
+    const forms = snapshot.docs.map((doc) => ({
+      ...doc.data(),
+      formId: doc.id,
+    }));
     return forms;
   } catch (error) {
     console.log((error as Error).message);
@@ -46,13 +70,13 @@ export const getFormsData = async (userId: string) => {
 
 export const addFormData = async (data: FormData) => {
   try {
-    const [uploadPromise, addDocPromise] = await Promise.all([
-      uploadImageToFirebase(data.imageUrl),
-      addDoc(formRef, { ...data, imageUrl: "" }),
-    ]);
+    const addDocPromise = await addDoc(formRef, { ...data, imageUrl: "" });
 
-    const { downloadUrl } = uploadPromise;
-    await updateDoc(addDocPromise, { imageUrl: downloadUrl });
+    if (data.imageUrl !== "") {
+      const { downloadUrl } = await uploadImageToFirebase(data.imageUrl);
+      await updateDoc(addDocPromise, { imageUrl: downloadUrl });
+    }
+
     return { success: true };
   } catch (error) {
     return { success: false, msg: (error as Error).message };

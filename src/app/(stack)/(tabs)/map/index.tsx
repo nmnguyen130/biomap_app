@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -23,6 +23,8 @@ const MapScreen = () => {
     setInput(value);
     setShowResults(value.trim().length > 0);
   };
+
+  useEffect(() => {}, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

@@ -1,6 +1,16 @@
+import FormInforBody from "./content/FormInforBody";
+import FormInforHeader from "./content/FormInforHeader";
+
 import CheckList from "./CheckList";
 import ContributedList from "./ContributedList";
 import Form from "./Form";
 import ProvinceTag from "./ProvinceTag";
 
-export { CheckList, ContributedList, Form, ProvinceTag };
+export {
+  FormInforBody,
+  FormInforHeader,
+  CheckList,
+  ContributedList,
+  Form,
+  ProvinceTag,
+};

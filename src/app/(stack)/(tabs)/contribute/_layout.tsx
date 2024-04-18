@@ -8,6 +8,10 @@ const ContributeLayout = () => {
         name="index"
         options={{ headerTitle: "User", headerShown: false }}
       />
+      <Stack.Screen
+        name="[id]"
+        options={{ headerTitle: "FormData", headerShown: false }}
+      />
     </Stack>
   );
 };
