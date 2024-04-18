@@ -4,9 +4,9 @@ import { DocumentData } from "@firebase/firestore";
 import { Ionicons } from "@expo/vector-icons";
 import { PressableText } from "@/components/common";
 
-interface Props {
+type Props = {
   creatureData: DocumentData;
-}
+};
 
 const CreatureInforHeader: React.FC<Props> = ({ creatureData }) => {
   return (

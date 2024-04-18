@@ -21,10 +21,10 @@ const projection = geoMercator().fitExtent(
 
 const provincePaths = PROVINCES.map(geoPath().projection(projection));
 
-interface Props {
+type Props = {
   width: number;
   height: number;
-}
+};
 
 const MapPath: React.FC<Props> = ({ width, height }) => {
   const [pathList, setPathList] = useState<ReactElement[]>([]);

@@ -4,9 +4,9 @@ import { DocumentData } from "@firebase/firestore";
 import { Image } from "expo-image";
 import { FontText } from "@/components/common";
 
-interface Props {
+type Props = {
   creatureData: DocumentData;
-}
+};
 
 const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
   const getRenderInformation = () => {
@@ -41,8 +41,8 @@ const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
         />
 
         <View className="mb-5">
-          {getRenderInformation().map((item) => (
-            <View className="mx-1.5 my-2">
+          {getRenderInformation().map((item, index) => (
+            <View className="mx-1.5 my-2" key={index}>
               <FontText className="font-bold text-lg">
                 {item.id}: <FontText>{item.content}</FontText>
               </FontText>

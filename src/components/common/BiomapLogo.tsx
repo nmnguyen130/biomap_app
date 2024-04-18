@@ -2,7 +2,7 @@ import { IMAGES } from "@/constants";
 import { Image, View, ViewProps } from "react-native";
 import FontText from "./FontText";
 
-export default function BiomapLogo(props: ViewProps) {
+const BiomapLogo = (props: ViewProps) => {
   const { className, ...otherProps } = props;
   return (
     <View className={`flex-col items-center ${className}`} {...otherProps}>
@@ -13,4 +13,6 @@ export default function BiomapLogo(props: ViewProps) {
       </FontText>
     </View>
   );
-}
+};
+
+export default BiomapLogo;

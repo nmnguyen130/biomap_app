@@ -6,20 +6,6 @@ import { DocumentData } from "@firebase/firestore";
 import { useAuth } from "@/hooks/auth/AuthContext";
 import { getFormsData } from "@/api/FormApi";
 
-const contributedData = [
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-  { scienceName: "Ursus thibetanus" },
-];
-
 const ContributedList = () => {
   const { user } = useAuth();
   const [formsData, setFormsData] = useState<DocumentData[]>([]);

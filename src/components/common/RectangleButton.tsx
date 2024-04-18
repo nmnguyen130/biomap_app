@@ -2,16 +2,16 @@ import { ReactNode } from "react";
 import { Pressable, TouchableOpacityProps } from "react-native";
 import FontText from "./FontText";
 
-export default function RectangleButton(
-  props: {
-    iconLeft?: ReactNode;
-    iconRight?: ReactNode;
-    text: string;
-    secondary?: boolean;
-    textColor?: string;
-    textStyle?: string;
-  } & TouchableOpacityProps
-) {
+type Props = {
+  iconLeft?: ReactNode;
+  iconRight?: ReactNode;
+  text: string;
+  secondary?: boolean;
+  textColor?: string;
+  textStyle?: string;
+} & TouchableOpacityProps;
+
+const RectangleButton = (props: Props) => {
   const {
     secondary,
     text,
@@ -46,4 +46,6 @@ export default function RectangleButton(
       {iconRight && iconRight}
     </Pressable>
   );
-}
+};
+
+export default RectangleButton;

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
-import { Dialog, ImagePickerModal } from "@/components/common";
+import { Dialog, FontText, ImagePickerModal } from "@/components/common";
 import { CheckList, Form } from "@/components/contribute";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
@@ -81,9 +81,9 @@ const NewContributeForm = () => {
           className="absolute top-0.5 left-2"
           onPress={() => router.replace("contribute")}
         >
-          <Text className="text-lighter_primary text-xl">Quay lại</Text>
+          <FontText className="text-lighter_primary text-xl">Quay lại</FontText>
         </TouchableOpacity>
-        <Text className="text-bold text-3xl">Đóng góp</Text>
+        <FontText className="text-bold text-3xl">Đóng góp</FontText>
       </View>
 
       <ScrollView>

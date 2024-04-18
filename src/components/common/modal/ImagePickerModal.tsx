@@ -1,13 +1,13 @@
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-interface Props {
+type Props = {
   modalVisible: boolean;
   onDismiss: () => void;
   onCameraPress: () => void;
   onLibraryPress: () => void;
   onRemovePress: () => void;
-}
+};
 
 const ImagePickerModal: React.FC<Props> = ({
   modalVisible,

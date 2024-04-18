@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-interface Props {
+type Props = {
   provinceName: string;
   onPress: () => void;
   isSelected: boolean;
-}
+};
 
 const ProvinceTag: React.FC<Props> = ({
   provinceName,

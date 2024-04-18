@@ -7,13 +7,13 @@ export enum MessageType {
   Error = "error",
 }
 
-interface Props {
+type Props = {
   dialogType: MessageType;
   isVisible: boolean;
   onClose: () => void;
   title?: string;
   content?: string;
-}
+};
 
 const messageMap: { [key in MessageType]: MessageDetails } = {
   [MessageType.Success]: {

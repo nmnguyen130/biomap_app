@@ -2,14 +2,14 @@ import { View } from "react-native";
 import { FontText, RectangleButton } from "../common";
 import { AntDesign } from "@expo/vector-icons";
 
-interface Props {
+type Props = {
   title: string;
   items: {
     icon: React.ComponentProps<typeof AntDesign>["name"];
     text: string;
     onPress?: () => void;
   }[];
-}
+};
 
 const ButtonSession: React.FC<Props> = ({ title, items }) => {
   return (

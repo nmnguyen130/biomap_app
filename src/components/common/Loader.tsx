@@ -1,10 +1,10 @@
 import { View } from "react-native";
 import LottieView from "lottie-react-native";
 
-interface Props {
+type Props = {
   width: number;
   height: number;
-}
+};
 
 const Loader: React.FC<Props> = ({ width, height }) => {
   return (

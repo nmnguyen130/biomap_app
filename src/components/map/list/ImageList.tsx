@@ -11,9 +11,9 @@ import {
   getDetailOfAllCreatures,
 } from "@/api/CreatureApi";
 
-interface Props {
+type Props = {
   provinceName: string;
-}
+};
 
 const ImageList: React.FC<Props> = ({ provinceName }) => {
   const { selectedType } = useCreatureType();

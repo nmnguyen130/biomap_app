@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { SplashScreen, Stack, router, useSegments } from "expo-router";
 import { AuthContextProvider, useAuth } from "@/hooks/auth/AuthContext";
 import useFontLoader from "@/hooks/useFontLoader";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -15,7 +16,9 @@ const RootLayout = () => {
 
   return (
     <AuthContextProvider>
-      <RootLayoutNav />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <RootLayoutNav />
+      </GestureHandlerRootView>
     </AuthContextProvider>
   );
 };
@@ -39,14 +42,9 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: "white" },
       }}
     >
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen
-        name="(modals)/[provinceName]"
-        options={{ presentation: "modal", animation: "fade_from_bottom" }}
-      />
+      <Stack.Screen name="(stack)" />
     </Stack>
   );
 }

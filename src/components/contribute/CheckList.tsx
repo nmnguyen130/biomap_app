@@ -7,11 +7,11 @@ import ProvinceTag from "./ProvinceTag";
 import { provinces } from "@/constants/data/ProvincesData";
 import { RectangleButton } from "../common";
 
-interface Props {
+type Props = {
   isVisible: boolean;
   onClose: (selectedProvinces: string[]) => void;
   provincesList?: string[];
-}
+};
 
 const CheckList: React.FC<Props> = ({ isVisible, onClose, provincesList }) => {
   const [searchContent, setSearchContent] = useState("");

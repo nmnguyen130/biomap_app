@@ -7,11 +7,11 @@ import { G, Svg } from "react-native-svg";
 
 const AnimatedG = Animated.createAnimatedComponent(G);
 
-interface Props {
+type Props = {
   width: number;
   height: number;
   children: React.ReactNode;
-}
+};
 
 const MapGesture: React.FC<Props> = ({ width, height, children }) => {
   const offset = useSharedValue({ x: 0, y: 0 });

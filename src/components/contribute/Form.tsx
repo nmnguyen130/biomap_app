@@ -12,10 +12,10 @@ import { addFormData } from "@/api/FormApi";
 import { MessageType } from "../common/modal/Dialog";
 import { RectangleButton, ToggleButton } from "../common";
 
-interface Props {
+type Props = {
   openModal: () => void;
   imageUrl: string | null;
-}
+};
 
 const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
   const { selectedType } = useCreatureType();
