@@ -19,6 +19,12 @@ import { getDoc } from "firebase/firestore";
 interface User {
   userId: string;
   username: string;
+  role: Role;
+}
+
+export enum Role {
+  ADMIN = "admin",
+  USER = "user",
 }
 
 interface AuthContextType {
@@ -67,7 +73,12 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
 
     if (docSnap.exists()) {
       let data = docSnap.data();
-      setUser({ ...user, username: data.username, userId: data.userId });
+      setUser({
+        ...user,
+        username: data.username,
+        userId: data.userId,
+        role: data.role,
+      });
     }
   };
 
@@ -99,6 +110,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       await setDoc(doc(db, "Users", response?.user?.uid), {
         username,
         userId: response?.user?.uid,
+        role: Role.USER,
       });
 
       return { success: true, data: response?.user };
