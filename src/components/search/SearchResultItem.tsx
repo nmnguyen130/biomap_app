@@ -4,11 +4,12 @@ import { COLOR } from "@/constants";
 
 export type SearchResultItemProps = {
   name: string;
+  scientificName?: string;
   imageSource?: ImageSourcePropType;
 };
 
 const SearchResultItem = (props: SearchResultItemProps) => {
-  const { imageSource, name } = props;
+  const { imageSource, name, scientificName } = props;
   return (
     <Pressable
       android_ripple={{
@@ -24,8 +25,8 @@ const SearchResultItem = (props: SearchResultItemProps) => {
           <Image source={imageSource} className="w-24 h-24 rounded-xl" />
         )}
         <View className="flex-1 gap-1">
-          <FontText className="font-bold text-xl text-darkblack">
-            {name}
+          <FontText className="text-xl text-darkblack">
+            {name} ({scientificName})
           </FontText>
         </View>
       </View>

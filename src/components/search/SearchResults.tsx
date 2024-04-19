@@ -19,7 +19,11 @@ const SearchResults = (props: SearchResultsProps) => {
         contentContainerStyle={{ paddingBottom: 4 }}
         data={searchResultArray}
         renderItem={({ item }) => (
-          <SearchResultItem imageSource={item.imageSource} name={item.name} />
+          <SearchResultItem
+            imageSource={item.imageSource}
+            name={item.name}
+            scientificName={item.scientificName}
+          />
         )}
       />
     </View>

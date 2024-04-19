@@ -26,4 +26,6 @@ export const auth = initializeAuth(app, {
 export const db = getFirestore(app);
 export const userRef = collection(db, "Users");
 export const provinceRef = collection(db, "Provinces");
+export const animalRef = collection(db, "Animals");
+export const plantRef = collection(db, "Plants");
 export const formRef = collection(db, "Forms");

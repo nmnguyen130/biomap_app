@@ -1,7 +1,13 @@
 import { doc, getDoc, query, where, getDocs } from "@firebase/firestore";
 import { getDownloadURL, ref } from "@firebase/storage";
 
-import { db, provinceRef, storage } from "@/utils/firebase";
+import {
+  animalRef,
+  db,
+  plantRef,
+  provinceRef,
+  storage,
+} from "@/utils/firebase";
 import { getURLFromCache, saveURLToCache } from "@/utils/storage";
 
 type CreatureLists = {
@@ -29,6 +35,27 @@ export const getCreaturesFromProvince = async (
   } catch (error) {
     console.error("Error fetching creatures:", error);
     throw error;
+  }
+};
+
+export const getAllCreatures = async () => {
+  try {
+    const animalSnapshot = await getDocs(animalRef);
+    const plantSnapshot = await getDocs(plantRef);
+
+    const [animalList, plantList] = await Promise.all([
+      animalSnapshot.docs.map((doc) => ({
+        name: doc.data().name,
+        scientificName: doc.id,
+      })),
+      plantSnapshot.docs.map((doc) => ({
+        name: doc.data().name,
+        scientificName: doc.id,
+      })),
+    ]);
+    return { animalList, plantList };
+  } catch (error) {
+    console.error("Error fetching creatures:", error);
   }
 };
 

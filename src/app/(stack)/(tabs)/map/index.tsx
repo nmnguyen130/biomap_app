@@ -7,15 +7,23 @@ import { MapGesture, MapPath } from "@/components/map";
 import { FilterButton, SearchInput, SearchResults } from "@/components/search";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SelectItem } from "@/components/common/input/Selector";
+import { getAllCreatures } from "@/api/CreatureApi";
 
 export type SearchResultType = "all" | "animal" | "plant";
 
 const MapScreen = () => {
   const { width, height } = useWindowDimensions();
 
-  const [input, setInput] = useState<string>();
+  const [input, setInput] = useState<string>("");
   const [resultType, setResultType] = useState<SearchResultType>("all");
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [creatureList, setCreatureList] = useState<{
+    animalList: { name: string; scientificName: string }[];
+    plantList: { name: string; scientificName: string }[];
+  }>({
+    animalList: [],
+    plantList: [],
+  });
 
   const modalizeRef = useRef<BottomSheetModal>(null);
 
@@ -24,7 +32,29 @@ const MapScreen = () => {
     setShowResults(value.trim().length > 0);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const creatures = await getAllCreatures();
+        if (creatures) setCreatureList(creatures);
+      } catch (error) {
+        console.error("Error fetching counts:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filteredCreatureList =
+    resultType === "all"
+      ? [...creatureList.animalList, ...creatureList.plantList]
+      : resultType === "animal"
+      ? creatureList.animalList
+      : creatureList.plantList;
+
+  const filteredResults = filteredCreatureList.filter((creature) =>
+    creature.name.toLowerCase().startsWith(input.trim().toLowerCase())
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -38,18 +68,12 @@ const MapScreen = () => {
       </View>
 
       {showResults && (
-        <SearchResults
-          className="absolute top-24"
-          type={resultType}
-          searchResultArray={[
-            {
-              name: "Con mèo",
-            },
-            {
-              name: "Con chó",
-            },
-          ]}
-        />
+        <View className="w-full h-2/3 absolute top-24 mt-1">
+          <SearchResults
+            type={resultType}
+            searchResultArray={filteredResults}
+          />
+        </View>
       )}
 
       <CustomBottomSheet bottomsheetRef={modalizeRef} snapPoint={[220]}>
