@@ -4,8 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
-import { FontText, PressableText, ToggleButton } from "@/components/common";
-import { ImageList } from "@/components/map";
+import {
+  FontText,
+  ImageList,
+  PressableText,
+  ToggleButton,
+} from "@/components/common";
 
 const CreatureModal = () => {
   const { provinceName = "" } = useLocalSearchParams<{

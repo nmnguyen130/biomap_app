@@ -18,11 +18,11 @@ const MapScreen = () => {
   const [resultType, setResultType] = useState<SearchResultType>("all");
   const [showResults, setShowResults] = useState<boolean>(false);
   const [creatureList, setCreatureList] = useState<{
-    animalList: { name: string; scientificName: string }[];
-    plantList: { name: string; scientificName: string }[];
+    animal_list: { name: string; scientificName: string }[];
+    plant_list: { name: string; scientificName: string }[];
   }>({
-    animalList: [],
-    plantList: [],
+    animal_list: [],
+    plant_list: [],
   });
 
   const modalizeRef = useRef<BottomSheetModal>(null);
@@ -47,10 +47,10 @@ const MapScreen = () => {
 
   const filteredCreatureList =
     resultType === "all"
-      ? [...creatureList.animalList, ...creatureList.plantList]
+      ? [...creatureList.animal_list, ...creatureList.plant_list]
       : resultType === "animal"
-      ? creatureList.animalList
-      : creatureList.plantList;
+      ? creatureList.animal_list
+      : creatureList.plant_list;
 
   const filteredResults = filteredCreatureList.filter((creature) =>
     creature.name.toLowerCase().startsWith(input.trim().toLowerCase())

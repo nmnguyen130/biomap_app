@@ -29,26 +29,25 @@ const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
 
   return (
     <ScrollView className="flex-1">
-      <View className="items-center">
-        <Image
-          style={{
-            width: "96%",
-            aspectRatio: 4 / 3,
-            marginVertical: 12,
-            borderRadius: 10,
-          }}
-          source={{ uri: creatureData.image_url }}
-        />
+      <Image
+        style={{
+          width: "96%",
+          aspectRatio: 4 / 3,
+          marginVertical: 12,
+          borderRadius: 10,
+          alignSelf: "center",
+        }}
+        source={{ uri: creatureData.image_url }}
+      />
 
-        <View className="mb-5">
-          {getRenderInformation().map((item, index) => (
-            <View className="mx-1.5 my-2" key={index}>
-              <FontText className="font-bold text-lg">
-                {item.id}: <FontText>{item.content}</FontText>
-              </FontText>
-            </View>
-          ))}
-        </View>
+      <View className="mb-5">
+        {getRenderInformation().map((item, index) => (
+          <View className="mx-1.5 my-2" key={index}>
+            <FontText className="font-bold text-lg">
+              {item.id}: <FontText>{item.content}</FontText>
+            </FontText>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );

@@ -53,7 +53,7 @@ export const getAllCreatures = async () => {
         scientificName: doc.id,
       })),
     ]);
-    return { animalList, plantList };
+    return { animal_list: animalList, plant_list: plantList };
   } catch (error) {
     console.error("Error fetching creatures:", error);
   }

@@ -4,7 +4,7 @@ import MapPath from "./MapPath";
 import CreatureInforBody from "./content/CreatureInforBody";
 import CreatureInforHeader from "./content/CreatureInforHeader";
 
-import ImageList from "./list/ImageList";
+import ImageList from "../common/ImageList";
 
 export {
   MapGesture,

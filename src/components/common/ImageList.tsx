@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
-import { View, FlatList, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 
 import { useCreatureType } from "@/hooks/CreatureTypeContext";
-import { FontText, Loader } from "../../common";
+import FontText from "./FontText";
+import Loader from "./Loader";
 import {
   Creature,
+  getAllCreatures,
   getCreaturesFromProvince,
   getDetailOfAllCreatures,
 } from "@/api/CreatureApi";
 
 type Props = {
-  provinceName: string;
+  provinceName?: string;
 };
 
-const ImageList: React.FC<Props> = ({ provinceName }) => {
+const ImageList: React.FC<Props> = ({ provinceName = "" }) => {
   const { selectedType } = useCreatureType();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,13 +34,29 @@ const ImageList: React.FC<Props> = ({ provinceName }) => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const creatureList = await getCreaturesFromProvince(provinceName);
+        const creatureList =
+          provinceName === ""
+            ? await getAllCreatures().then((creatureList) => {
+                if (!creatureList) {
+                  setIsLoading(false);
+                  return;
+                }
+                const animal_list = creatureList.animal_list.map(
+                  (animal) => animal.scientificName
+                );
+                const plant_list = creatureList.plant_list.map(
+                  (plant) => plant.scientificName
+                );
+                return { animal_list, plant_list };
+              })
+            : await getCreaturesFromProvince(provinceName);
         if (!creatureList) {
           setIsLoading(false);
           return;
         }
 
         const { animal_list, plant_list } = creatureList;
+        console.log(animal_list);
         const [animalData, plantData] = await Promise.all([
           getDetailOfAllCreatures(animal_list, "Animals"),
           getDetailOfAllCreatures(plant_list, "Plants"),
