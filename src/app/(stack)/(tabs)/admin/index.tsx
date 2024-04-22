@@ -105,7 +105,7 @@ const AdminScreen = () => {
       </ScrollView>
 
       <CustomBottomSheet bottomsheetRef={modalizeRef} snapPoint={[745]}>
-        <CreatureManager />
+        <CreatureManager onClose={() => modalizeRef.current?.close()} />
       </CustomBottomSheet>
     </SafeAreaView>
   );

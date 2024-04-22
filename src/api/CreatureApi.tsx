@@ -1,5 +1,14 @@
-import { doc, getDoc, query, where, getDocs } from "@firebase/firestore";
-import { getDownloadURL, ref } from "@firebase/storage";
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "@firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "@firebase/storage";
 
 import {
   animalRef,
@@ -18,7 +27,40 @@ type CreatureLists = {
 export type Creature = {
   id: string;
   name: string;
-  imageURL: string;
+  characteristic?: string;
+  behavior?: string;
+  habitat?: string;
+  image_url: string;
+  type?: string;
+};
+
+export const addCreature = async (data: Creature, provinces: string[]) => {
+  try {
+    const table = data.type === "animal" ? "Animals" : "Plants";
+    const imageUrl = `${data.type}/${data.id}.${data.image_url
+      .split(".")
+      .pop()}`;
+
+    await Promise.all([
+      uploadImageToFirebase(data.type, data.id, data.image_url),
+      setDoc(doc(db, table, data.id), { ...data, image_url: imageUrl }),
+      ...provinces.map(async (item) => {
+        const q = query(provinceRef, where("name", "==", item));
+        const snapshot = await getDocs(q);
+        const provinceId = snapshot.docs[0].id;
+        const fieldToUpdate =
+          data.type === "animal" ? "animal_list" : "plant_list";
+
+        await updateDoc(doc(db, "Provinces", provinceId), {
+          [fieldToUpdate]: arrayUnion(data.id),
+        });
+      }),
+    ]);
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, msg: (error as Error).message };
+  }
 };
 
 export const getCreaturesFromProvince = async (
@@ -83,18 +125,18 @@ export const getDetailOfAllCreatures = async (
             JSON.stringify({
               id: data,
               name: creatureData.name,
-              imageURL: imageUrl,
+              image_url: imageUrl,
             })
           );
 
           return {
             id: data,
             name: creatureData.name,
-            imageURL: imageUrl,
+            image_url: imageUrl,
           };
         }
       }
-      return { id: "", name: "", imageURL: "" };
+      return { id: "", name: "", image_url: "" };
     })
   );
 
@@ -135,5 +177,41 @@ export const getProvincesContainCreature = async (
     return snapshot.docs.map((doc) => doc.data().name as string);
   } catch (error) {
     console.error("Error fetching provinces contain creature:", error);
+  }
+};
+
+const uploadImageToFirebase = async (
+  type: string | undefined,
+  scientificName: string,
+  imageURL: string
+) => {
+  const imageRef = ref(
+    storage,
+    `${type}/${scientificName}.${imageURL.split(".").pop()}`
+  );
+
+  try {
+    const response = await fetch(imageURL);
+    const blob = await response.blob();
+
+    const uploadTask = uploadBytesResumable(imageRef, blob);
+
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Optional: Handle progress updates if needed
+        },
+        (error) => {
+          reject(error);
+        },
+        async () => {
+          resolve(true);
+        }
+      );
+    });
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
   }
 };

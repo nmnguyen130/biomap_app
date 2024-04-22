@@ -56,7 +56,6 @@ const ImageList: React.FC<Props> = ({ provinceName = "" }) => {
         }
 
         const { animal_list, plant_list } = creatureList;
-        console.log(animal_list);
         const [animalData, plantData] = await Promise.all([
           getDetailOfAllCreatures(animal_list, "Animals"),
           getDetailOfAllCreatures(plant_list, "Plants"),
@@ -104,7 +103,7 @@ const ImageList: React.FC<Props> = ({ provinceName = "" }) => {
               }}
             >
               <Image
-                source={{ uri: item.imageURL }}
+                source={{ uri: item.image_url }}
                 style={{ width: "100%", aspectRatio: 4 / 3, borderRadius: 6 }}
               />
               <FontText className="text-base pt-1.5 text-yellow-300">

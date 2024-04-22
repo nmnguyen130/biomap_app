@@ -4,6 +4,7 @@ import FontText from "./FontText";
 
 const BiomapLogo = (props: ViewProps) => {
   const { className, ...otherProps } = props;
+
   return (
     <View className={`flex-col items-center ${className}`} {...otherProps}>
       <Image source={IMAGES.pawlogo} className="w-36 h-[122px] mb-3" />

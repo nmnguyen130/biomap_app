@@ -5,13 +5,16 @@ import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
-import { Dialog, FontText, ImagePickerModal } from "@/components/common";
-import { CheckList, Form } from "@/components/contribute";
+import { Dialog, FontText, Form, ImagePickerModal } from "@/components/common";
+import { CheckList } from "@/components/contribute";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
+import { Role, useAuth } from "@/hooks/auth/AuthContext";
 
 const NewContributeForm = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>("");
+
+  const { user } = useAuth();
 
   const { displayMode, isOpen, modalContent, hide, dataList } = useModal();
 
@@ -79,11 +82,17 @@ const NewContributeForm = () => {
       <View className="flex-row w-full items-center justify-center mt-3 mb-6">
         <TouchableOpacity
           className="absolute top-0.5 left-2"
-          onPress={() => router.replace("contribute")}
+          onPress={() =>
+            user?.role === Role.ADMIN
+              ? router.replace("admin")
+              : router.replace("contribute")
+          }
         >
           <FontText className="text-lighter_primary text-xl">Quay lại</FontText>
         </TouchableOpacity>
-        <FontText className="text-bold text-3xl">Đóng góp</FontText>
+        <FontText className="text-bold text-3xl">
+          {user?.role === Role.ADMIN ? "Thêm sinh vật" : "Đóng góp"}
+        </FontText>
       </View>
 
       <ScrollView>

@@ -6,6 +6,7 @@ import ImagePickerModal from "./modal/ImagePickerModal";
 
 import BiomapLogo from "./BiomapLogo";
 import FontText from "./FontText";
+import Form from "./Form";
 import ImageList from "./ImageList";
 import Loader from "./Loader";
 import PressableText from "./PressableText";
@@ -20,6 +21,7 @@ export {
   ImagePickerModal,
   BiomapLogo,
   FontText,
+  Form,
   ImageList,
   Loader,
   PressableText,

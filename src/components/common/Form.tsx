@@ -4,13 +4,15 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 
-import { useAuth } from "@/hooks/auth/AuthContext";
+import { Role, useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 import { useCreatureType } from "@/hooks/CreatureTypeContext";
 
 import { addFormData } from "@/api/FormApi";
+import { addCreature } from "@/api/CreatureApi";
 import { MessageType } from "../common/modal/Dialog";
-import { RectangleButton, ToggleButton } from "../common";
+import RectangleButton from "./RectangleButton";
+import ToggleButton from "./ToggleButton";
 
 type Props = {
   openModal: () => void;
@@ -66,6 +68,44 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
     setIsLoading(false);
     if (response.success) {
       router.replace("(tabs)/contribute");
+    }
+  };
+
+  const handlerAdd = async () => {
+    if (
+      !name.current ||
+      !imageUrl ||
+      !scientificName.current ||
+      !characteristic.current ||
+      !habitat.current ||
+      provincesText === "" ||
+      (selectedType === "animal" && !behavior.current)
+    ) {
+      show(DisplayMode.Dialog, {
+        dialogType: MessageType.Alert,
+        title: "Thiếu thông tin",
+        content: "Vui lòng điền đầy đủ thông tin sinh vật!",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    const data = {
+      id: scientificName.current,
+      name: name.current,
+      characteristic: characteristic.current,
+      ...(selectedType === "animal" && { behavior: behavior.current }),
+      habitat: habitat.current,
+      image_url: imageUrl as unknown as string,
+      type: selectedType,
+    };
+    console.log(data);
+
+    const response = await addCreature(data, dataList);
+
+    setIsLoading(false);
+    if (response.success) {
+      router.replace("(tabs)/admin");
     }
   };
 
@@ -152,11 +192,19 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
         </TouchableOpacity>
 
         <View className="mx-2">
-          <RectangleButton
-            onPress={handlerSend}
-            text={isLoading ? "Đang gửi..." : "Gửi"}
-            disabled={isLoading}
-          />
+          {user?.role === Role.ADMIN ? (
+            <RectangleButton
+              onPress={handlerAdd}
+              text={isLoading ? "Đang xử lí..." : "Thêm"}
+              disabled={isLoading}
+            />
+          ) : (
+            <RectangleButton
+              onPress={handlerSend}
+              text={isLoading ? "Đang gửi..." : "Gửi"}
+              disabled={isLoading}
+            />
+          )}
         </View>
       </View>
     </View>
