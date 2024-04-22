@@ -22,7 +22,7 @@ const ContributedList = () => {
     };
 
     fetchData();
-  }, []);
+  }, [formsData]);
 
   return (
     <View className="h-5/6 m-2">
@@ -43,7 +43,7 @@ const ContributedList = () => {
                 className="bg-primary items-center justify-center h-11 w-11 rounded-full"
                 onPress={() => {
                   router.push({
-                    pathname: "(tabs)/contribute/formData",
+                    pathname: "(tabs)/contribute/[id]",
                     params: { formId: item.formId },
                   });
                 }}

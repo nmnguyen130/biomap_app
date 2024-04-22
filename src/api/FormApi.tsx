@@ -1,14 +1,21 @@
 import { db, formRef, storage } from "@/utils/firebase";
 import {
   addDoc,
+  deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "@firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "@firebase/storage";
+import {
+  deleteObject,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "@firebase/storage";
 
 const tableName = "Forms";
 
@@ -45,7 +52,7 @@ export const getFormDataById = async (formID: string) => {
     const snapshot = await getDoc(formDoc);
     const forms = snapshot.data();
 
-    return forms;
+    return { ...forms, id: formID };
   } catch (error) {
     console.log((error as Error).message);
     return {};
@@ -80,6 +87,21 @@ export const addFormData = async (data: FormData) => {
     return { success: true };
   } catch (error) {
     return { success: false, msg: (error as Error).message };
+  }
+};
+
+export const deleteForm = async (formData: DocumentData) => {
+  try {
+    await deleteDoc(doc(db, tableName, formData.id));
+    if (formData.imageUrl) {
+      const imageRef = ref(storage, formData.imageUrl);
+      deleteObject(imageRef);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting form:", error);
+    return false;
   }
 };
 
