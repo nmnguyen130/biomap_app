@@ -1,79 +1,20 @@
-import { useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
 
-import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
 import { Dialog, FontText, Form, ImagePickerModal } from "@/components/common";
 import { CheckList } from "@/components/contribute";
+import { CreatureTypeProvider } from "@/hooks/CreatureTypeContext";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 import { Role, useAuth } from "@/hooks/auth/AuthContext";
+import { useImagePicker } from "@/hooks/useImagePicker";
 
 const NewContributeForm = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>("");
-
   const { user } = useAuth();
 
+  const { modalVisible, setModalVisible, imageUrl, uploadImage, removeImage } =
+    useImagePicker();
   const { displayMode, isOpen, modalContent, hide, dataList } = useModal();
-
-  const uploadImage = async (mode: string) => {
-    try {
-      let result: ImagePicker.ImagePickerResult;
-
-      if (mode === "camera") {
-        await ImagePicker.requestCameraPermissionsAsync();
-        result = await ImagePicker.launchCameraAsync({
-          cameraType: ImagePicker.CameraType.front,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      } else {
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-        result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-      }
-
-      if (!result.canceled) {
-        // Save Image
-        await saveImage(result);
-      }
-    } catch (error) {
-      alert("Error accessing your Camera! " + (error as Error).message);
-      setModalVisible(false);
-    }
-  };
-
-  const saveImage = async (
-    image: ImagePicker.ImagePickerSuccessResult | null
-  ) => {
-    try {
-      if (image) {
-        // Upload displayed image
-        setImageUrl(image.assets[0].uri);
-        setModalVisible(false);
-      } else {
-        setImageUrl(null);
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const removeImage = async () => {
-    try {
-      saveImage(null);
-    } catch (error) {
-      alert((error as Error).message);
-    }
-    setModalVisible(false);
-  };
 
   return (
     <SafeAreaView
