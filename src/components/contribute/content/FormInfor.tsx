@@ -6,47 +6,86 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 
+import { DisplayMode, useModal } from "@/hooks/ModalContext";
+import useFormInput from "@/hooks/form/useFormInput";
+
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { FontText, PressableText } from "@/components/common";
-import { DisplayMode, useModal } from "@/hooks/ModalContext";
-import { deleteForm } from "@/api/FormApi";
+import { deleteForm, updateFormInformation } from "@/api/FormApi";
 import { useState } from "react";
 
 interface Props {
   formData: DocumentData;
+  tempImageUrl: string | null;
+  setRestart: () => void;
   openModal: () => void;
   imageUrl: string | null;
-  updateFormInfor: (value: DocumentData) => void;
 }
 
 const FormInforBody: React.FC<Props> = ({
   formData,
+  tempImageUrl,
+  setRestart,
   openModal,
   imageUrl,
-  updateFormInfor,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
-
   const { show, dataList } = useModal();
 
   const provincesText = dataList.join(", ");
+  const {
+    ScientificNameInput,
+    NameInput,
+    CharacteristicInput,
+    BehaviorInput,
+    HabitatInput,
+    getInputValues,
+  } = useFormInput({
+    scientificName: formData.scientificName,
+    name: formData.name,
+    characteristic: formData.characteristic,
+    behavior: formData.behavior,
+    habitat: formData.habitat,
+  });
 
   const getRenderInformation = () => {
     const commonData = [
-      { id: "Tên khoa học", content: formData.scientificName },
-      { id: "Tên", content: formData.name },
-      { id: "Đặc điểm", content: formData.characteristic },
-      { id: "Tập tính", content: formData.behavior },
-      { id: "Môi trường sống", content: formData.habitat },
+      {
+        id: "Tên khoa học",
+        input: ScientificNameInput,
+        content: formData.scientificName,
+      },
+      { id: "Tên", input: NameInput, content: formData.name },
+      {
+        id: "Đặc điểm",
+        input: CharacteristicInput,
+        content: formData.characteristic,
+      },
+      { id: "Tập tính", input: BehaviorInput, content: formData.behavior },
+      { id: "Môi trường sống", input: HabitatInput, content: formData.habitat },
       {
         id: "Các tỉnh cư trú",
-        content: formData.provinces
-          .map((province: string, index: number) => {
-            const comma = index !== formData.provinces.length - 1 ? ", " : ".";
-            return `${province}${comma}`;
-          })
-          .join(""),
+        input: (
+          <TouchableOpacity
+            className="flex-row items-center bg-[#E9f2eb] rounded-xl"
+            onPress={() => show(DisplayMode.Checklist)}
+          >
+            <TextInput
+              multiline
+              value={provincesText || formData.provinces.join(", ")}
+              editable={false}
+              className="flex-1 text-gray-800"
+              placeholder="Tỉnh"
+            />
+            <MaterialIcons
+              name="keyboard-arrow-right"
+              size={24}
+              color="black"
+            />
+          </TouchableOpacity>
+        ),
+        content: formData.provinces.join(", "),
       },
     ];
 
@@ -57,10 +96,27 @@ const FormInforBody: React.FC<Props> = ({
     return commonData;
   };
 
-  const toggleEdit = () => {
+  const toggleEdit = async () => {
     if (isEdit) {
-      console.log("Send to firebase");
-      // await updateFormData(formInfor);
+      console.log(imageUrl);
+      const updatedData = {
+        ...getInputValues(),
+        ...(imageUrl === ""
+          ? {}
+          : !imageUrl
+          ? {
+              oldImageUrl: formData.imageUrl,
+              imageUrl: "",
+            }
+          : {
+              oldImageUrl: formData.imageUrl,
+              imageUrl: imageUrl as string,
+            }),
+        provinces: dataList.length !== 0 ? dataList : formData.provinces,
+      };
+
+      await updateFormInformation(formData.id, updatedData);
+      setRestart();
     }
     setIsEdit((prev) => !prev);
   };
@@ -132,25 +188,35 @@ const FormInforBody: React.FC<Props> = ({
 
       {/* Body */}
       <ScrollView className="flex-1">
-        {formData.imageUrl && (
-          <TouchableOpacity disabled={!isEdit} onPress={openModal}>
-            <Image
-              style={{
-                width: "96%",
-                aspectRatio: 4 / 3,
-                marginVertical: 12,
-                borderRadius: 10,
-                alignSelf: "center",
-              }}
-              source={{ uri: imageUrl || formData.imageUrl }}
-            />
-          </TouchableOpacity>
-        )}
+        {formData.imageUrl ||
+          (isEdit && (
+            <TouchableOpacity
+              disabled={!isEdit}
+              onPress={openModal}
+              className="w-[96%] aspect-4/3 border-primary border-2 rounded-lg self-center items-center justify-center"
+            >
+              {!tempImageUrl ? (
+                <Ionicons name="image-outline" size={44} color="green" />
+              ) : (
+                <Image
+                  style={{
+                    width: "100%",
+                    aspectRatio: 4 / 3,
+                    marginVertical: 12,
+                    borderRadius: 6,
+                    alignSelf: "center",
+                  }}
+                  source={{ uri: imageUrl || tempImageUrl }}
+                />
+              )}
+            </TouchableOpacity>
+          ))}
+
         <View className="mb-5">
-          {getRenderInformation().map((item, index) => (
-            <View key={index} className="m-2 gap-2">
-              {!isEdit ? (
-                <FontText className="font-bold text-lg">
+          {!isEdit ? (
+            getRenderInformation().map((item, index) => (
+              <View key={index} className="m-2 gap-2">
+                <FontText key={index} className="font-bold text-lg">
                   {item.id}:{" "}
                   <FontText>
                     {item.id === "Các tỉnh cư trú"
@@ -158,36 +224,20 @@ const FormInforBody: React.FC<Props> = ({
                       : item.content}
                   </FontText>
                 </FontText>
-              ) : (
-                <>
-                  <FontText className="font-bold">{item.id}: </FontText>
-                  {item.id === "Các tỉnh cư trú" ? (
-                    <TouchableOpacity
-                      className="flex-row items-center py-2 px-4 bg-[#E9f2eb] rounded-xl"
-                      onPress={() => show(DisplayMode.Checklist)}
-                    >
-                      <TextInput
-                        multiline
-                        value={provincesText || item.content}
-                        editable={false}
-                        className="flex-1 text-gray-800"
-                        placeholder="Tỉnh"
-                      />
-                      <MaterialIcons
-                        name="keyboard-arrow-right"
-                        size={24}
-                        color="black"
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TextInput className="py-2 px-4 bg-[#E9f2eb] rounded-xl">
-                      {item.content}
-                    </TextInput>
-                  )}
-                </>
-              )}
+              </View>
+            ))
+          ) : (
+            <View className="m-2 gap-2">
+              {getRenderInformation().map((item, index) => (
+                <View key={index} className="gap-2">
+                  <FontText className="font-bold text-lg">{item.id}: </FontText>
+                  <View className="bg-[#E9f2eb] rounded-xl py-2 px-4">
+                    {item.input}
+                  </View>
+                </View>
+              ))}
             </View>
-          ))}
+          )}
         </View>
       </ScrollView>
     </>

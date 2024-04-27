@@ -26,10 +26,11 @@ interface FormData {
   characteristic: string;
   behavior: string;
   habitat: string;
-  imageUrl: string;
-  type: string;
-  submissionDate: string;
-  status: string;
+  oldImageUrl?: string;
+  imageUrl?: string;
+  type?: string;
+  submissionDate?: string;
+  status?: string;
 }
 
 export const getNumberFormWithStatus = async (status?: string) => {
@@ -79,7 +80,7 @@ export const addFormData = async (data: FormData) => {
   try {
     const addDocPromise = await addDoc(formRef, { ...data, imageUrl: "" });
 
-    if (data.imageUrl !== "") {
+    if (data.imageUrl) {
       const { downloadUrl } = await uploadImageToFirebase(data.imageUrl);
       await updateDoc(addDocPromise, { imageUrl: downloadUrl });
     }
@@ -90,12 +91,31 @@ export const addFormData = async (data: FormData) => {
   }
 };
 
+export const updateFormInformation = async (formId: string, data: FormData) => {
+  try {
+    const docRef = doc(db, tableName, formId);
+
+    if (data.oldImageUrl) {
+      deleteImage(data.oldImageUrl);
+      delete data.oldImageUrl;
+      if (data.imageUrl) {
+        const { downloadUrl } = await uploadImageToFirebase(data.imageUrl);
+        data.imageUrl = downloadUrl;
+      }
+    }
+
+    await updateDoc(docRef, { ...data });
+    return { success: true };
+  } catch (error) {
+    return { success: false, msg: (error as Error).message };
+  }
+};
+
 export const deleteForm = async (formData: DocumentData) => {
   try {
     await deleteDoc(doc(db, tableName, formData.id));
     if (formData.imageUrl) {
-      const imageRef = ref(storage, formData.imageUrl);
-      deleteObject(imageRef);
+      deleteImage(formData.imageUrl);
     }
 
     return true;
@@ -134,5 +154,14 @@ const uploadImageToFirebase = async (
   } catch (error) {
     console.error("Error uploading image:", error);
     throw error;
+  }
+};
+
+const deleteImage = (imageUrl: string) => {
+  try {
+    const imageRef = ref(storage, imageUrl);
+    deleteObject(imageRef);
+  } catch (error) {
+    console.error("Error deleting image:", error);
   }
 };

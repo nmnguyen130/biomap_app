@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { View, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -7,6 +7,7 @@ import { Image } from "expo-image";
 import { Role, useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 import { useCreatureType } from "@/hooks/CreatureTypeContext";
+import useFormInput from "@/hooks/form/useFormInput";
 
 import { addFormData } from "@/api/FormApi";
 import { addCreature } from "@/api/CreatureApi";
@@ -26,18 +27,23 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
   const { show, dataList } = useModal();
 
-  const scientificName = useRef("");
-  const name = useRef("");
-  const characteristic = useRef("");
-  const behavior = useRef("");
-  const habitat = useRef("");
+  const {
+    ScientificNameInput,
+    NameInput,
+    CharacteristicInput,
+    BehaviorInput,
+    HabitatInput,
+    getInputValues,
+  } = useFormInput();
 
   const provincesText = dataList.join(", ");
 
   const options = { timeZone: "Asia/Ho_Chi_Minh", hour12: false };
 
   const handlerSend = async () => {
-    if (!name.current && !imageUrl) {
+    const { name } = getInputValues();
+
+    if (!name && !imageUrl) {
       show(DisplayMode.Dialog, {
         dialogType: MessageType.Alert,
         title: "Đóng góp",
@@ -51,17 +57,15 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
     const data = {
       userId: user?.userId,
-      scientificName: scientificName.current,
-      name: name.current,
-      characteristic: characteristic.current,
-      behavior: behavior.current,
-      habitat: habitat.current,
+      ...getInputValues(),
       provinces: dataList,
-      imageUrl: imageUrl as unknown as string,
+      imageUrl: imageUrl as string,
       type: selectedType,
       submissionDate: today,
       status: "pending",
     };
+
+    console.log(data);
 
     const response = await addFormData(data);
 
@@ -72,14 +76,17 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
   };
 
   const handlerAdd = async () => {
+    const { scientificName, name, characteristic, behavior, habitat } =
+      getInputValues();
+
     if (
-      !name.current ||
+      !name ||
       !imageUrl ||
-      !scientificName.current ||
-      !characteristic.current ||
-      !habitat.current ||
-      provincesText === "" ||
-      (selectedType === "animal" && !behavior.current)
+      !scientificName ||
+      !characteristic ||
+      !habitat ||
+      dataList.length === 0 ||
+      (selectedType === "animal" && !behavior)
     ) {
       show(DisplayMode.Dialog, {
         dialogType: MessageType.Alert,
@@ -91,12 +98,12 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
     setIsLoading(true);
     const data = {
-      id: scientificName.current,
-      name: name.current,
-      characteristic: characteristic.current,
-      ...(selectedType === "animal" && { behavior: behavior.current }),
-      habitat: habitat.current,
-      image_url: imageUrl as unknown as string,
+      id: scientificName,
+      name,
+      characteristic,
+      ...(selectedType === "animal" && { behavior }),
+      habitat,
+      image_url: imageUrl as string,
       type: selectedType,
     };
     console.log(data);
@@ -115,48 +122,23 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
       <View>
         <View className="m-3 pb-3 border-b border-gray-400">
-          <TextInput
-            className="text-gray-800"
-            placeholder="Tên khoa học"
-            onChangeText={(value) => (scientificName.current = value)}
-          ></TextInput>
+          {ScientificNameInput}
         </View>
 
-        <View className="m-3 pb-3 border-b border-gray-400">
-          <TextInput
-            className="text-gray-800"
-            placeholder="Tên sinh vật"
-            onChangeText={(value) => (name.current = value)}
-          ></TextInput>
-        </View>
+        <View className="m-3 pb-3 border-b border-gray-400">{NameInput}</View>
 
         <View className="m-3 pb-3 border-b border-gray-400">
-          <TextInput
-            multiline
-            className="w-11/12 text-gray-800"
-            placeholder="Đặc điểm"
-            onChangeText={(value) => (characteristic.current = value)}
-          ></TextInput>
+          {CharacteristicInput}
         </View>
 
         {selectedType === "animal" && (
           <View className="m-3 pb-3 border-b border-gray-400">
-            <TextInput
-              multiline
-              className="w-11/12 text-gray-800"
-              placeholder="Tập tính"
-              onChangeText={(value) => (behavior.current = value)}
-            ></TextInput>
+            {BehaviorInput}
           </View>
         )}
 
         <View className="m-3 pb-3 border-b border-gray-400">
-          <TextInput
-            multiline
-            className="w-11/12 text-gray-800"
-            placeholder="Môi trường sống"
-            onChangeText={(value) => (habitat.current = value)}
-          ></TextInput>
+          {HabitatInput}
         </View>
 
         <TouchableOpacity

@@ -13,7 +13,10 @@ import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 const FormData = () => {
   const { formId } = useLocalSearchParams<{ formId: string }>();
 
+  const [restart, setRestart] = useState(false);
   const [formInfor, setFormInfor] = useState<DocumentData>({});
+  const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
+
   const { modalVisible, setModalVisible, imageUrl, uploadImage, removeImage } =
     useImagePicker();
   const { displayMode, isOpen, modalContent, hide, dataList } = useModal();
@@ -26,19 +29,19 @@ const FormData = () => {
         }
         const formInfor = await getFormDataById(formId);
 
-        if (formInfor) setFormInfor(formInfor);
+        if (formInfor) {
+          setFormInfor(formInfor);
+          ///@ts-ignore
+          setTempImageUrl(formInfor.imageUrl);
+        }
+        setRestart(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, []);
-
-  const updateFormInfor = (updatedFormInfor: DocumentData) => {
-    console.log("Form Up");
-    setFormInfor(updatedFormInfor);
-  };
+  }, [restart]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -46,9 +49,10 @@ const FormData = () => {
         <View className="flex-1 p-3">
           <FormInfor
             formData={formInfor}
+            tempImageUrl={tempImageUrl}
+            setRestart={() => setRestart(true)}
             openModal={() => setModalVisible(true)}
             imageUrl={imageUrl}
-            updateFormInfor={updateFormInfor}
           />
         </View>
       ) : (
@@ -60,7 +64,10 @@ const FormData = () => {
         onDismiss={() => setModalVisible(false)}
         onCameraPress={() => uploadImage("camera")}
         onLibraryPress={() => uploadImage("gallery")}
-        onRemovePress={() => removeImage()}
+        onRemovePress={() => {
+          removeImage();
+          setTempImageUrl(null);
+        }}
       />
 
       {isOpen &&
@@ -76,7 +83,9 @@ const FormData = () => {
           <CheckList
             isVisible={isOpen}
             onClose={hide}
-            provincesList={dataList}
+            provincesList={
+              dataList.length !== 0 ? dataList : formInfor.provinces
+            }
           />
         ))}
     </SafeAreaView>
