@@ -98,7 +98,6 @@ const FormInforBody: React.FC<Props> = ({
 
   const toggleEdit = async () => {
     if (isEdit) {
-      console.log(imageUrl);
       const updatedData = {
         ...getInputValues(),
         ...(imageUrl === ""
@@ -188,29 +187,28 @@ const FormInforBody: React.FC<Props> = ({
 
       {/* Body */}
       <ScrollView className="flex-1">
-        {formData.imageUrl ||
-          (isEdit && (
-            <TouchableOpacity
-              disabled={!isEdit}
-              onPress={openModal}
-              className="w-[96%] aspect-4/3 border-primary border-2 rounded-lg self-center items-center justify-center"
-            >
-              {!tempImageUrl ? (
-                <Ionicons name="image-outline" size={44} color="green" />
-              ) : (
-                <Image
-                  style={{
-                    width: "100%",
-                    aspectRatio: 4 / 3,
-                    marginVertical: 12,
-                    borderRadius: 6,
-                    alignSelf: "center",
-                  }}
-                  source={{ uri: imageUrl || tempImageUrl }}
-                />
-              )}
-            </TouchableOpacity>
-          ))}
+        {(isEdit || tempImageUrl !== "") && (
+          <TouchableOpacity
+            disabled={!isEdit}
+            onPress={openModal}
+            className="w-[96%] aspect-4/3 border-primary border-2 rounded-lg self-center items-center justify-center"
+          >
+            {tempImageUrl || imageUrl ? (
+              <Image
+                style={{
+                  width: "100%",
+                  aspectRatio: 4 / 3,
+                  marginVertical: 12,
+                  borderRadius: 6,
+                  alignSelf: "center",
+                }}
+                source={{ uri: imageUrl || tempImageUrl || undefined }}
+              />
+            ) : (
+              <Ionicons name="image-outline" size={44} color="green" />
+            )}
+          </TouchableOpacity>
+        )}
 
         <View className="mb-5">
           {!isEdit ? (

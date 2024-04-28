@@ -95,8 +95,8 @@ export const updateFormInformation = async (formId: string, data: FormData) => {
   try {
     const docRef = doc(db, tableName, formId);
 
-    if (data.oldImageUrl) {
-      deleteImage(data.oldImageUrl);
+    if (data.oldImageUrl || data.oldImageUrl === "") {
+      if (data.oldImageUrl !== "") deleteImage(data.oldImageUrl);
       delete data.oldImageUrl;
       if (data.imageUrl) {
         const { downloadUrl } = await uploadImageToFirebase(data.imageUrl);

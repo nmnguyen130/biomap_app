@@ -65,8 +65,6 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
       status: "pending",
     };
 
-    console.log(data);
-
     const response = await addFormData(data);
 
     setIsLoading(false);
