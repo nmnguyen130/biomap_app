@@ -88,7 +88,6 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         ...user,
         userId: data.userId,
         username: data.username,
-
         role: data.role,
       });
     }
@@ -174,10 +173,8 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
 
   const changeUsername = async (id: string, username: string) => {
     try {
-      //   const snapshot = await getDocs(q);
-      //   const data = snapshot.docs[0].data();
-      //   await updateDoc(doc(db, "Users", data.userId), { username: userName });
-      //   await updateUserData(data.userId);
+      await updateDoc(doc(db, "Users", id), { username: username });
+      await updateUserData(id);
       return { success: true };
     } catch (error) {
       return {

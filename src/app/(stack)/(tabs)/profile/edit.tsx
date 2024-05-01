@@ -4,23 +4,37 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 import { useAuth } from "@/hooks/auth/AuthContext";
 
 import { IMAGES } from "@/constants";
+import Dialog, { MessageType } from "@/components/common/modal/Dialog";
 import { FontText, RectangleButton } from "@/components/common";
 import { ChangePassModal } from "@/components/profile";
-import { ModalProvider } from "@/hooks/ModalContext";
 import { auth } from "@/utils/firebase";
 
 const EditProfile = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { user, changeUsername } = useAuth();
+  const { displayMode, isOpen, modalContent, show, hide } = useModal();
 
   const usernameRef = useRef(user?.username);
 
   const handleUpdate = async () => {
-    if (user?.username && usernameRef.current) {
-      changeUsername(user?.username, usernameRef.current);
+    if (user && usernameRef.current) {
+      setIsLoading(true);
+
+      const response = await changeUsername(user?.userId, usernameRef.current);
+
+      setIsLoading(false);
+      if (response.success) {
+        show(DisplayMode.Dialog, {
+          dialogType: MessageType.Success,
+          title: "Thành công",
+          content: "Đã thay đổi tên đăng nhập!",
+        });
+      }
     }
   };
 
@@ -86,18 +100,35 @@ const EditProfile = () => {
         <RectangleButton
           onPress={handleUpdate}
           className="w-10/12 bg-lighter_primary mt-6"
-          text="Lưu thay đổi"
+          text={isLoading ? "Đang lưu" : "Lưu thay đổi"}
+          disabled={isLoading}
         />
       </View>
 
-      <ModalProvider>
-        <ChangePassModal
-          modalVisible={modalVisible}
-          onDismiss={() => setModalVisible(false)}
+      <ChangePassModal
+        modalVisible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+      />
+
+      {isOpen && displayMode === DisplayMode.Dialog && (
+        <Dialog
+          dialogType={modalContent.dialogType}
+          isVisible={isOpen}
+          onClose={hide}
+          title={modalContent.title}
+          content={modalContent.content}
         />
-      </ModalProvider>
+      )}
     </SafeAreaView>
   );
 };
 
-export default EditProfile;
+const EditProfileScreen = () => {
+  return (
+    <ModalProvider>
+      <EditProfile />
+    </ModalProvider>
+  );
+};
+
+export default EditProfileScreen;
