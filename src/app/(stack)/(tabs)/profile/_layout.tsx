@@ -8,6 +8,10 @@ const ProfileLayout = () => {
         name="index"
         options={{ headerTitle: "Profile", headerShown: false }}
       />
+      <Stack.Screen
+        name="edit"
+        options={{ headerTitle: "Edit Profile", headerShown: false }}
+      />
     </Stack>
   );
 };

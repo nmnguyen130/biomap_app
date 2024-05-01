@@ -6,6 +6,7 @@ import { WaveSvg } from "@/components/svg";
 import { FontText } from "@/components/common";
 import { useAuth } from "@/hooks/auth/AuthContext";
 import { ButtonSession } from "@/components/profile";
+import { router } from "expo-router";
 
 const ProfileScreen = () => {
   const { logout } = useAuth();
@@ -39,6 +40,7 @@ const ProfileScreen = () => {
                 {
                   icon: "setting",
                   text: "Thiết lập hồ sơ",
+                  onPress: () => router.push("(tabs)/profile/edit"),
                 },
               ]}
             />

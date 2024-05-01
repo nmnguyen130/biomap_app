@@ -1,6 +1,7 @@
 import Selector from "./input/Selector";
 
 import CustomBottomSheet from "./modal/CustomBottomSheet";
+import CustomModal from "./modal/CustomModal";
 import Dialog from "./modal/Dialog";
 import ImagePickerModal from "./modal/ImagePickerModal";
 
@@ -17,6 +18,7 @@ import ToggleButton from "./ToggleButton";
 export {
   Selector,
   CustomBottomSheet,
+  CustomModal,
   Dialog,
   ImagePickerModal,
   BiomapLogo,

@@ -1,3 +1,5 @@
+import ChangePassModal from "./modal/ChangePassModal";
+
 import ButtonSession from "./ButtonSession";
 
-export { ButtonSession };
+export { ChangePassModal, ButtonSession };

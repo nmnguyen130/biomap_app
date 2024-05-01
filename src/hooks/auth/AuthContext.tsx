@@ -10,11 +10,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
 } from "@firebase/auth";
-import { doc, setDoc } from "@firebase/firestore";
+import { doc, setDoc, getDocs, where } from "@firebase/firestore";
 
-import { auth, db } from "@/utils/firebase";
-import { getDoc } from "firebase/firestore";
+import { auth, db, userRef } from "@/utils/firebase";
+import { getDoc, query, updateDoc } from "firebase/firestore";
 
 interface User {
   userId: string;
@@ -40,6 +43,14 @@ interface AuthContextType {
     password: string
   ) => Promise<{ success: boolean; msg?: string }>;
   logout: () => Promise<{ success: boolean; msg?: string; error?: Error }>;
+  changePassword: (
+    oldPassword: string,
+    newPassword: string
+  ) => Promise<{ success: boolean; msg?: string; error?: Error }>;
+  changeUsername: (
+    id: string,
+    username: string
+  ) => Promise<{ success: boolean; msg?: string; error?: Error }>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -75,8 +86,9 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
       let data = docSnap.data();
       setUser({
         ...user,
-        username: data.username,
         userId: data.userId,
+        username: data.username,
+
         role: data.role,
       });
     }
@@ -136,9 +148,57 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const changePassword = async (oldPassword: string, newPassword: string) => {
+    try {
+      if (auth.currentUser?.email) {
+        const credential = EmailAuthProvider.credential(
+          auth.currentUser?.email,
+          oldPassword
+        );
+        const result = await reauthenticateWithCredential(
+          auth.currentUser,
+          credential
+        );
+        await updatePassword(result.user, newPassword);
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      return {
+        success: false,
+        msg: (error as Error).message,
+        error: error as Error,
+      };
+    }
+  };
+
+  const changeUsername = async (id: string, username: string) => {
+    try {
+      //   const snapshot = await getDocs(q);
+      //   const data = snapshot.docs[0].data();
+      //   await updateDoc(doc(db, "Users", data.userId), { username: userName });
+      //   await updateUserData(data.userId);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        msg: (error as Error).message,
+        error: error as Error,
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, register, logout }}
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        register,
+        logout,
+        changePassword,
+        changeUsername,
+      }}
     >
       {children}
     </AuthContext.Provider>
