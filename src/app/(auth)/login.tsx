@@ -101,7 +101,12 @@ const LoginForm = () => {
               thumbColor="white"
             />
             <FontText className="flex-1">Remember Me</FontText>
-            <PressableText className="text-right">Quên mật khẩu?</PressableText>
+            <PressableText
+              className="text-right"
+              onPress={() => router.push("(auth)/checkemail")}
+            >
+              Quên mật khẩu?
+            </PressableText>
           </View>
 
           <RectangleButton
