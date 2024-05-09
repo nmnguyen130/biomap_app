@@ -103,7 +103,7 @@ const LoginForm = () => {
             <FontText className="flex-1">Remember Me</FontText>
             <PressableText
               className="text-right"
-              onPress={() => router.push("(auth)/checkemail")}
+              onPress={() => router.push("(auth)/checkmail")}
             >
               Quên mật khẩu?
             </PressableText>

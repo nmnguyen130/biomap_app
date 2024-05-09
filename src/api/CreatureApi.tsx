@@ -156,7 +156,7 @@ export const getCreatureInfor = async (creatureName: string, type: string) => {
 
       const cacheImageURL = await getURLFromCache(`URL_${creatureName}`);
       if (cacheImageURL) {
-        creatureData.image_url = cacheImageURL.imageURL;
+        creatureData.image_url = cacheImageURL.image_url;
       }
 
       return creatureData;
