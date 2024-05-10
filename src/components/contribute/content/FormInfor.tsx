@@ -11,7 +11,7 @@ import useFormInput from "@/hooks/form/useFormInput";
 
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { FontText, PressableText } from "@/components/common";
+import { ActionButton, FontText, PressableText } from "@/components/common";
 import { deleteForm, updateFormInformation } from "@/api/FormApi";
 import { useState } from "react";
 
@@ -150,38 +150,18 @@ const FormInforBody: React.FC<Props> = ({
         </View>
 
         <View className="flex-row items-center gap-2">
-          <TouchableOpacity
+          <ActionButton
+            type="edit"
             onPress={toggleEdit}
-            className="p-2 rounded-lg border opacity-100"
-            style={
-              isEdit
-                ? {
-                    backgroundColor: "rgb(220, 252, 231)",
-                    borderColor: "green",
-                  }
-                : { backgroundColor: "rgb(243, 244, 246)" }
-            }
-          >
-            {isEdit ? (
-              <MaterialCommunityIcons name="check" size={20} color="green" />
-            ) : (
-              <MaterialCommunityIcons
-                name="wrench-outline"
-                size={20}
-                color="black"
-              />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            className="p-2 rounded-lg border border-red-500 bg-red-100"
+            className="opacity-100"
+            isEdit={isEdit}
+          />
+
+          <ActionButton
+            type="delete"
             onPress={handlerDelete}
-          >
-            <MaterialCommunityIcons
-              name="trash-can-outline"
-              size={20}
-              color="red"
-            />
-          </TouchableOpacity>
+            className="border-red-500 bg-red-100"
+          />
         </View>
       </View>
 

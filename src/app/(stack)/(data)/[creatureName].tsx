@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DocumentData } from "firebase/firestore";
 
-import { Loader } from "@/components/common";
-import { CreatureInforBody, CreatureInforHeader } from "@/components/map";
+import { CreatureInfor, Loader } from "@/components/common";
 import {
   getCreatureInfor,
   getProvincesContainCreature,
@@ -44,10 +42,7 @@ const CreatureInformation = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {Object.keys(creatureInfor).length > 0 ? (
-        <View className="flex-1 p-3">
-          <CreatureInforHeader creatureData={creatureInfor} />
-          <CreatureInforBody creatureData={creatureInfor} />
-        </View>
+        <CreatureInfor creatureData={creatureInfor} />
       ) : (
         <Loader width={450} height={450} />
       )}

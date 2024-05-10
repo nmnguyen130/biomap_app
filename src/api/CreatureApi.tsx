@@ -1,4 +1,5 @@
 import {
+  DocumentData,
   arrayUnion,
   doc,
   getDoc,
@@ -7,8 +8,14 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
 } from "@firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "@firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "@firebase/storage";
 
 import {
   animalRef,
@@ -197,6 +204,20 @@ export const getProvincesContainCreature = async (
   }
 };
 
+export const deleteCreature = async (creatureData: DocumentData) => {
+  try {
+    await deleteDoc(doc(db, creatureData.type, creatureData.id));
+    if (creatureData.image_url) {
+      deleteImage(creatureData.image_url);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting form:", (error as Error).message);
+    return false;
+  }
+};
+
 const uploadImageToFirebase = async (
   type: string | undefined,
   scientificName: string,
@@ -230,5 +251,14 @@ const uploadImageToFirebase = async (
   } catch (error) {
     console.error("Error uploading image:", (error as Error).message);
     throw error;
+  }
+};
+
+const deleteImage = (imageUrl: string) => {
+  try {
+    const imageRef = ref(storage, imageUrl);
+    deleteObject(imageRef);
+  } catch (error) {
+    console.error("Error deleting image:", (error as Error).message);
   }
 };

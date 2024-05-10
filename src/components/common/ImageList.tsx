@@ -16,9 +16,10 @@ import {
 
 type Props = {
   provinceName?: string;
+  onCloseModal?: () => void;
 };
 
-const ImageList: React.FC<Props> = ({ provinceName = "" }) => {
+const ImageList: React.FC<Props> = ({ provinceName = "", onCloseModal }) => {
   const { selectedType } = useCreatureType();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -93,6 +94,7 @@ const ImageList: React.FC<Props> = ({ provinceName = "" }) => {
                 index % 2 === 0 ? "me-auto" : "ms-auto"
               }`}
               onPress={() => {
+                onCloseModal && onCloseModal();
                 router.push({
                   pathname: "(data)/[creatureName]",
                   params: {

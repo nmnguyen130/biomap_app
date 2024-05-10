@@ -22,7 +22,7 @@ const CreatureManager = ({ onClose }: Props) => {
       </PressableText>
 
       <CreatureTypeProvider>
-        <ImageList />
+        <ImageList onCloseModal={onClose} />
         <ToggleButton />
       </CreatureTypeProvider>
     </View>

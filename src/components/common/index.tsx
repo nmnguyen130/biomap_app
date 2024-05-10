@@ -1,3 +1,5 @@
+import CreatureInfor from "./content/CreatureInfor";
+
 import Selector from "./input/Selector";
 
 import CustomBottomSheet from "./modal/CustomBottomSheet";
@@ -5,6 +7,7 @@ import CustomModal from "./modal/CustomModal";
 import Dialog from "./modal/Dialog";
 import ImagePickerModal from "./modal/ImagePickerModal";
 
+import ActionButton from "./ActionButton";
 import BiomapLogo from "./BiomapLogo";
 import FontText from "./FontText";
 import Form from "./Form";
@@ -16,11 +19,13 @@ import RectangleButton from "./RectangleButton";
 import ToggleButton from "./ToggleButton";
 
 export {
+  CreatureInfor,
   Selector,
   CustomBottomSheet,
   CustomModal,
   Dialog,
   ImagePickerModal,
+  ActionButton,
   BiomapLogo,
   FontText,
   Form,
