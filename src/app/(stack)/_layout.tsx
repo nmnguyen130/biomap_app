@@ -10,6 +10,9 @@ const StackLayout = () => {
         }}
       >
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(data)/[creatureName]" />
+        <Stack.Screen name="(modals)/[provinceName]" />
+        <Stack.Screen name="(modals)/form" />
       </Stack>
     </BottomSheetModalProvider>
   );

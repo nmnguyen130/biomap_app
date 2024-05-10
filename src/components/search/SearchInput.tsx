@@ -8,7 +8,7 @@ const SearchInput = (props: TextInputProps) => {
       <SearchSVG />
       <View className="h-9 w-1 rounded-lg bg-primary" />
       <TextInput
-        className="flex-1 font-bold text-lg placeholder:text-gray-400"
+        className="flex-1 font-medium text-lg placeholder:text-gray-400"
         placeholder="Search.."
         selectionColor={COLOR.primary}
         placeholderTextColor={"gray"}

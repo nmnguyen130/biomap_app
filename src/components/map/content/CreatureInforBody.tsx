@@ -10,7 +10,7 @@ type Props = {
 
 const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
   const getRenderInformation = () => {
-    return [
+    const commonData = [
       { id: "Đặc điểm", content: creatureData.characteristic },
       { id: "Tập tính", content: creatureData.behavior },
       { id: "Môi trường sống", content: creatureData.habitat },
@@ -25,6 +25,12 @@ const CreatureInforBody: React.FC<Props> = ({ creatureData }) => {
           .join(""),
       },
     ];
+
+    if (creatureData.type === "Plants") {
+      return commonData.filter((data) => data.id !== "Tập tính");
+    }
+
+    return commonData;
   };
 
   return (

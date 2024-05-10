@@ -30,7 +30,7 @@ const CreatureInformation = () => {
         const provinces = await getProvincesContainCreature(creatureName, type);
 
         if (creatureData && provinces) {
-          const mergedData = { ...creatureData, provinces };
+          const mergedData = { ...creatureData, provinces, type };
           setCreatureInfor(mergedData);
         }
       } catch (error) {

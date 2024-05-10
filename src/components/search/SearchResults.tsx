@@ -23,6 +23,7 @@ const SearchResults = (props: SearchResultsProps) => {
             imageSource={item.imageSource}
             name={item.name}
             scientificName={item.scientificName}
+            type={item.type}
           />
         )}
       />

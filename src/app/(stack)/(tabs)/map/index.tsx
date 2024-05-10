@@ -38,7 +38,7 @@ const MapScreen = () => {
         const creatures = await getAllCreatures();
         if (creatures) setCreatureList(creatures);
       } catch (error) {
-        console.error("Error fetching counts:", error);
+        console.error("Error fetching counts:", (error as Error).message);
       }
     };
 

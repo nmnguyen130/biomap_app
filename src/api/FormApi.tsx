@@ -43,7 +43,8 @@ export const getNumberFormWithStatus = async (status?: string) => {
     const number = snapshot.docs.length;
     return number;
   } catch (error) {
-    console.log((error as Error).message);
+    console.error("Error fetching number of forms:", (error as Error).message);
+    throw error;
   }
 };
 
@@ -55,7 +56,7 @@ export const getFormDataById = async (formID: string) => {
 
     return { ...forms, id: formID };
   } catch (error) {
-    console.log((error as Error).message);
+    console.error("Error fetching form data by ID:", (error as Error).message);
     return {};
   }
 };
@@ -71,7 +72,10 @@ export const getFormsDataByUserId = async (userId: string) => {
     }));
     return forms;
   } catch (error) {
-    console.log((error as Error).message);
+    console.error(
+      "Error fetching form data by UserID:",
+      (error as Error).message
+    );
     return [];
   }
 };
@@ -120,7 +124,7 @@ export const deleteForm = async (formData: DocumentData) => {
 
     return true;
   } catch (error) {
-    console.error("Error deleting form:", error);
+    console.error("Error deleting form:", (error as Error).message);
     return false;
   }
 };
@@ -152,7 +156,7 @@ const uploadImageToFirebase = async (
       );
     });
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error("Error uploading image:", (error as Error).message);
     throw error;
   }
 };
@@ -162,6 +166,6 @@ const deleteImage = (imageUrl: string) => {
     const imageRef = ref(storage, imageUrl);
     deleteObject(imageRef);
   } catch (error) {
-    console.error("Error deleting image:", error);
+    console.error("Error deleting image:", (error as Error).message);
   }
 };

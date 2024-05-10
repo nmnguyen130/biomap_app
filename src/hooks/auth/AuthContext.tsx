@@ -8,16 +8,17 @@ import {
 import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword,
 } from "@firebase/auth";
-import { doc, setDoc, getDocs, where } from "@firebase/firestore";
+import { doc, setDoc } from "@firebase/firestore";
 
-import { auth, db, userRef } from "@/utils/firebase";
-import { getDoc, query, updateDoc } from "firebase/firestore";
+import { auth, db } from "@/utils/firebase";
+import { getDoc, updateDoc } from "@firebase/firestore";
 
 interface User {
   userId: string;
@@ -51,6 +52,7 @@ interface AuthContextType {
     id: string,
     username: string
   ) => Promise<{ success: boolean; msg?: string; error?: Error }>;
+  sendOtp: (email: string) => Promise<{ success: boolean; msg?: string }>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -185,6 +187,17 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const sendOtp = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      let msg = (error as Error).message;
+      if (msg.includes("(auth/invalid-email)")) msg = "Email không hợp lệ!";
+      return { success: false, msg: msg };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -195,6 +208,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         logout,
         changePassword,
         changeUsername,
+        sendOtp,
       }}
     >
       {children}
