@@ -74,6 +74,15 @@ const useFormInput = (initialValues?: FormValues) => {
     };
   };
 
+  const getInputValuesExceptScientificName = () => {
+    return {
+      name: name.current,
+      characteristic: characteristic.current,
+      behavior: behavior.current,
+      habitat: habitat.current,
+    };
+  };
+
   return {
     ScientificNameInput,
     NameInput,
@@ -81,6 +90,7 @@ const useFormInput = (initialValues?: FormValues) => {
     BehaviorInput,
     HabitatInput,
     getInputValues,
+    getInputValuesExceptScientificName,
   };
 };
 

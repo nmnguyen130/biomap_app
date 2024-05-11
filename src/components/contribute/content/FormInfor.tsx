@@ -18,17 +18,17 @@ import { useState } from "react";
 interface Props {
   formData: DocumentData;
   tempImageUrl: string | null;
-  setRestart: () => void;
-  openModal: () => void;
   imageUrl: string | null;
+  openModal: () => void;
+  setRestart: () => void;
 }
 
-const FormInforBody: React.FC<Props> = ({
+const FormInfor: React.FC<Props> = ({
   formData,
   tempImageUrl,
-  setRestart,
-  openModal,
   imageUrl,
+  openModal,
+  setRestart,
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { show, dataList } = useModal();
@@ -222,4 +222,4 @@ const FormInforBody: React.FC<Props> = ({
   );
 };
 
-export default FormInforBody;
+export default FormInfor;

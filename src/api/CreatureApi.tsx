@@ -1,6 +1,7 @@
 import {
   DocumentData,
   arrayUnion,
+  arrayRemove,
   doc,
   getDoc,
   query,
@@ -41,27 +42,26 @@ export type Creature = {
   type?: string;
 };
 
+type CreatureDataUpdate = {
+  name: string;
+  type: string;
+  oldImageUrl?: string;
+  image_url?: string;
+  provinces: string[];
+};
+
 export const addCreature = async (data: Creature, provinces: string[]) => {
   try {
     const table = data.type === "animal" ? "Animals" : "Plants";
     const imageUrl = `${data.type}/${data.id}.${data.image_url
       .split(".")
       .pop()}`;
+    const fieldToUpdate = data.type === "animal" ? "animal_list" : "plant_list";
 
     await Promise.all([
       uploadImageToFirebase(data.type, data.id, data.image_url),
       setDoc(doc(db, table, data.id), { ...data, image_url: imageUrl }),
-      ...provinces.map(async (item) => {
-        const q = query(provinceRef, where("name", "==", item));
-        const snapshot = await getDocs(q);
-        const provinceId = snapshot.docs[0].id;
-        const fieldToUpdate =
-          data.type === "animal" ? "animal_list" : "plant_list";
-
-        await updateDoc(doc(db, "Provinces", provinceId), {
-          [fieldToUpdate]: arrayUnion(data.id),
-        });
-      }),
+      addCreatureInProvince(data.id, fieldToUpdate, provinces),
     ]);
 
     return { success: true };
@@ -204,6 +204,31 @@ export const getProvincesContainCreature = async (
   }
 };
 
+export const updateCreatureInformation = async (
+  id: string,
+  data: CreatureDataUpdate,
+  initialProvinces: string[]
+) => {
+  try {
+    const docRef = doc(db, data.type, id);
+    if (data.oldImageUrl || data.oldImageUrl === "") {
+      if (data.oldImageUrl !== "") deleteImage(data.oldImageUrl);
+      delete data.oldImageUrl;
+      if (data.image_url) {
+        const storageFolder = data.type === "Animals" ? "animal" : "plant";
+        await uploadImageToFirebase(storageFolder, id, data.image_url);
+      }
+    }
+    const field = data.type === "Animals" ? "animal_list" : "plant_list";
+    deleteCreatureInProvince(id, field, initialProvinces);
+    addCreatureInProvince(id, field, data.provinces);
+    await updateDoc(docRef, { ...data });
+    return { success: true };
+  } catch (error) {
+    return { success: false, msg: (error as Error).message };
+  }
+};
+
 export const deleteCreature = async (creatureData: DocumentData) => {
   try {
     await deleteDoc(doc(db, creatureData.type, creatureData.id));
@@ -211,11 +236,56 @@ export const deleteCreature = async (creatureData: DocumentData) => {
       deleteImage(creatureData.image_url);
     }
 
+    const fieldToDelete =
+      creatureData.type === "Animals" ? "animal_list" : "plant_list";
+
+    deleteCreatureInProvince(
+      creatureData.id,
+      fieldToDelete,
+      creatureData.provinces
+    );
+
     return true;
   } catch (error) {
     console.error("Error deleting form:", (error as Error).message);
     return false;
   }
+};
+
+const addCreatureInProvince = async (
+  id: string,
+  fieldToUpdate: string,
+  provinces: string[]
+) => {
+  const promises = provinces.map(async (province) => {
+    const q = query(provinceRef, where("name", "==", province));
+    const snapshot = await getDocs(q);
+    const provinceId = snapshot.docs[0].id;
+
+    return updateDoc(doc(db, "Provinces", provinceId), {
+      [fieldToUpdate]: arrayUnion(id),
+    });
+  });
+
+  await Promise.all(promises);
+};
+
+const deleteCreatureInProvince = async (
+  id: string,
+  fieldToDelete: string,
+  provinces: string[]
+) => {
+  const promises = provinces.map(async (province) => {
+    const q = query(provinceRef, where("name", "==", province));
+    const snapshot = await getDocs(q);
+    const provinceId = snapshot.docs[0].id;
+
+    return updateDoc(doc(db, "Provinces", provinceId), {
+      [fieldToDelete]: arrayRemove(id),
+    });
+  });
+
+  await Promise.all(promises);
 };
 
 const uploadImageToFirebase = async (
