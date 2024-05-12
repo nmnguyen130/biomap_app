@@ -1,19 +1,16 @@
+import { useState } from "react";
 import { View, ScrollView, TouchableOpacity, TextInput } from "react-native";
+import { Image } from "expo-image";
+import { router } from "expo-router";
 import { DocumentData } from "@firebase/firestore";
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 import useFormInput from "@/hooks/form/useFormInput";
-
-import { Image } from "expo-image";
-import { router } from "expo-router";
-import { ActionButton, FontText, PressableText } from "@/components/common";
 import { deleteForm, updateFormInformation } from "@/api/FormApi";
-import { useState } from "react";
+
+import { ActionButton, FontText, PressableText } from "@/components/common";
+import { DialogOption, MessageType } from "@/components/common/modal/Dialog";
 
 interface Props {
   formData: DocumentData;
@@ -121,8 +118,19 @@ const FormInfor: React.FC<Props> = ({
   };
 
   const handlerDelete = async () => {
-    const success = await deleteForm(formData);
-    if (success) router.back();
+    show(
+      DisplayMode.Dialog,
+      {
+        dialogOption: DialogOption.Double,
+        dialogType: MessageType.Error,
+        title: "Cảnh báo!",
+        content: "Bạn có chắc chắn muốn xóa không?",
+      },
+      async () => {
+        const success = await deleteForm(formData);
+        if (success) router.replace("(tabs)/contribute");
+      }
+    );
   };
 
   return (

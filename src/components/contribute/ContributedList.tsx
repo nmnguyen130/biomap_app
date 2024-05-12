@@ -17,7 +17,7 @@ const ContributedList = () => {
         const data = await getFormsDataByUserId(user?.userId as string);
         setFormsData(data);
       } catch (error) {
-        console.error("Error fetching counts:", error);
+        console.error("Error get form data by UserID:", error);
       }
     };
 

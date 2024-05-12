@@ -33,9 +33,20 @@ interface FormData {
   status?: string;
 }
 
-export const getNumberFormWithStatus = async (status?: string) => {
+export const getNumberFormWithStatus = async (
+  userId?: string,
+  status?: string
+) => {
   try {
-    const q = status
+    const q = userId
+      ? status
+        ? query(
+            formRef,
+            where("status", "==", status),
+            where("userId", "==", userId)
+          )
+        : query(formRef, where("userId", "==", userId))
+      : status
       ? query(formRef, where("status", "==", status))
       : query(formRef);
     const snapshot = await getDocs(q);

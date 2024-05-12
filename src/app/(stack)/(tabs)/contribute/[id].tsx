@@ -20,7 +20,8 @@ const FormData = () => {
 
   const { modalVisible, setModalVisible, imageUrl, uploadImage, removeImage } =
     useImagePicker();
-  const { displayMode, isOpen, modalContent, hide, dataList } = useModal();
+  const { displayMode, isOpen, modalContent, hide, cancel, dataList } =
+    useModal();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,9 +75,11 @@ const FormData = () => {
       {isOpen &&
         (displayMode === DisplayMode.Dialog ? (
           <Dialog
+            option={modalContent.dialogOption}
             dialogType={modalContent.dialogType}
             isVisible={isOpen}
             onClose={hide}
+            onCancel={cancel}
             title={modalContent.title}
             content={modalContent.content}
           />

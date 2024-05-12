@@ -4,21 +4,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { useAuth } from "@/hooks/auth/AuthContext";
+
 import { ContributedList } from "@/components/contribute";
 import { COLOR } from "@/constants";
 import { getNumberFormWithStatus } from "@/api/FormApi";
 import { FontText } from "@/components/common";
 
 const UserContributed = () => {
+  const { user } = useAuth();
   const [counts, setCounts] = useState({ total: 0, approved: 0, pending: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setCounts({
-          total: (await getNumberFormWithStatus()) as number,
-          approved: (await getNumberFormWithStatus("approved")) as number,
-          pending: (await getNumberFormWithStatus("pending")) as number,
+          total: (await getNumberFormWithStatus(user?.userId)) as number,
+          approved: (await getNumberFormWithStatus(
+            user?.userId,
+            "approved"
+          )) as number,
+          pending: (await getNumberFormWithStatus(
+            user?.userId,
+            "pending"
+          )) as number,
         });
       } catch (error) {
         console.error("Error fetching counts:", error);

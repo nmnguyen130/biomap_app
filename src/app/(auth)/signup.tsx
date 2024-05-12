@@ -6,7 +6,10 @@ import { router } from "expo-router";
 import { useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 
-import Dialog, { MessageType } from "@/components/common/modal/Dialog";
+import Dialog, {
+  DialogOption,
+  MessageType,
+} from "@/components/common/modal/Dialog";
 import { AuthInput, AuthPassword } from "@/components/auth";
 import {
   BiomapLogo,
@@ -35,6 +38,7 @@ const SignupForm = () => {
       !confirmPassRef.current
     ) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Đăng ký",
         content: "Vui lòng điền đầy đủ thông tin!",
@@ -52,6 +56,7 @@ const SignupForm = () => {
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Error,
         title: "Đăng ký thất bại!",
         content: response.msg,
@@ -132,6 +137,7 @@ const SignupForm = () => {
 
       {isOpen && displayMode === DisplayMode.Dialog && (
         <Dialog
+          option={modalContent.dialogOption}
           dialogType={modalContent.dialogType}
           isVisible={isOpen}
           onClose={hide}

@@ -54,6 +54,7 @@ const NewContributeForm = () => {
       {isOpen &&
         (displayMode === DisplayMode.Dialog ? (
           <Dialog
+            option={modalContent.dialogOption}
             dialogType={modalContent.dialogType}
             isVisible={isOpen}
             onClose={hide}

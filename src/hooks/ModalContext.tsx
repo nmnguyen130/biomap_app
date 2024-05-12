@@ -1,7 +1,8 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { MessageType } from "@/components/common/modal/Dialog";
+import { DialogOption, MessageType } from "@/components/common/modal/Dialog";
 
 interface ModalContent {
+  dialogOption: DialogOption;
   dialogType: MessageType;
   title?: string;
   content?: string;
@@ -18,13 +19,18 @@ const ModalContext = createContext<{
   modalContent: ModalContent;
   show(mode: DisplayMode, content?: ModalContent, onClose?: () => void): void;
   hide(): void;
+  cancel(): void;
   dataList: string[];
 }>({
   displayMode: DisplayMode.Dialog,
   isOpen: false,
-  modalContent: { dialogType: MessageType.Success },
+  modalContent: {
+    dialogOption: DialogOption.Single,
+    dialogType: MessageType.Success,
+  },
   show: () => {},
   hide: () => {},
+  cancel: () => {},
   dataList: [],
 });
 
@@ -32,6 +38,7 @@ const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [displayMode, setDisplayMode] = useState(DisplayMode.Dialog);
   const [modalContent, setModalContent] = useState<ModalContent>({
+    dialogOption: DialogOption.Single,
     dialogType: MessageType.Success,
   });
   const [dataList, setDataList] = useState<string[]>([]);
@@ -64,12 +71,17 @@ const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   };
 
+  const cancelModal = () => {
+    setIsOpen(false);
+  };
+
   const value = {
     displayMode,
     isOpen,
     modalContent,
     show: showModal,
     hide: hideModal,
+    cancel: cancelModal,
     dataList,
   };
 

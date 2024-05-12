@@ -11,7 +11,7 @@ import useFormInput from "@/hooks/form/useFormInput";
 
 import { addFormData } from "@/api/FormApi";
 import { addCreature } from "@/api/CreatureApi";
-import { MessageType } from "../common/modal/Dialog";
+import { DialogOption, MessageType } from "../common/modal/Dialog";
 import RectangleButton from "./RectangleButton";
 import ToggleButton from "./ToggleButton";
 
@@ -45,6 +45,7 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
     if (!name && !imageUrl) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Đóng góp",
         content: "Tên/Hình ảnh không được để trống!",
@@ -69,7 +70,16 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
     setIsLoading(false);
     if (response.success) {
-      router.replace("(tabs)/contribute");
+      show(
+        DisplayMode.Dialog,
+        {
+          dialogOption: DialogOption.Single,
+          dialogType: MessageType.Alert,
+          title: "Đóng góp thành công!",
+          content: "Cảm ơn bạn đã đóng góp!",
+        },
+        () => router.replace("(tabs)/contribute")
+      );
     }
   };
 
@@ -87,6 +97,7 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
       (selectedType === "animal" && !behavior)
     ) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Thiếu thông tin",
         content: "Vui lòng điền đầy đủ thông tin sinh vật!",

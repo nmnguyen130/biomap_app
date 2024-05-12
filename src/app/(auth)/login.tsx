@@ -11,7 +11,10 @@ import {
   clearLoginInfoFromCache,
 } from "@/utils/storage";
 
-import Dialog, { MessageType } from "@/components/common/modal/Dialog";
+import Dialog, {
+  DialogOption,
+  MessageType,
+} from "@/components/common/modal/Dialog";
 import { AuthInput, AuthPassword } from "@/components/auth";
 import {
   BiomapLogo,
@@ -46,6 +49,7 @@ const LoginForm = () => {
   const handleLogin = async () => {
     if (!emailRef.current || !passwordRef.current) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Đăng nhập",
         content: "Vui lòng điền đầy đủ thông tin!",
@@ -59,6 +63,7 @@ const LoginForm = () => {
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Error,
         title: "Đăng nhập thất bại!",
         content: response.msg,
@@ -136,6 +141,7 @@ const LoginForm = () => {
 
       {isOpen && displayMode === DisplayMode.Dialog && (
         <Dialog
+          option={modalContent.dialogOption}
           dialogType={modalContent.dialogType}
           isVisible={isOpen}
           onClose={hide}

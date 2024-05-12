@@ -8,7 +8,10 @@ import { useAuth } from "@/hooks/auth/AuthContext";
 
 import { IMAGES } from "@/constants";
 import { FontText, PressableText, RectangleButton } from "@/components/common";
-import Dialog, { MessageType } from "@/components/common/modal/Dialog";
+import Dialog, {
+  DialogOption,
+  MessageType,
+} from "@/components/common/modal/Dialog";
 
 const CheckEmailSubScreen = () => {
   const emailRef = useRef<string>("");
@@ -20,6 +23,7 @@ const CheckEmailSubScreen = () => {
   const handleSendLink = async () => {
     if (!emailRef.current) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Quên mật khẩu",
         content: "Vui lòng nhập địa chỉ email của bạn!",
@@ -33,6 +37,7 @@ const CheckEmailSubScreen = () => {
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Error,
         title: "Thất bại!",
         content: response.msg,
@@ -41,6 +46,7 @@ const CheckEmailSubScreen = () => {
       show(
         DisplayMode.Dialog,
         {
+          dialogOption: DialogOption.Single,
           dialogType: MessageType.Success,
           title: "Gửi link thành công!",
           content: "Vui lòng kiểm tra email của bạn!",
@@ -88,6 +94,7 @@ const CheckEmailSubScreen = () => {
 
       {isOpen && displayMode === DisplayMode.Dialog && (
         <Dialog
+          option={modalContent.dialogOption}
           dialogType={modalContent.dialogType}
           isVisible={isOpen}
           onClose={hide}
