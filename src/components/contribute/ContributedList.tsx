@@ -22,7 +22,7 @@ const ContributedList = () => {
     };
 
     fetchData();
-  }, [formsData]);
+  }, []);
 
   return (
     <View className="h-5/6 m-2">

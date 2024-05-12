@@ -8,7 +8,7 @@ interface InputRef {
   current: TextInput | null;
 }
 
-const ForgotScreen = () => {
+const OtpScreen = () => {
   const [focusedInput, setFocusedInput] = useState<number>(1);
   const [inputText, setInputText] = useState<string[]>(Array(6).fill(""));
   const inputRefs = useRef<InputRef[]>(
@@ -107,4 +107,4 @@ const ForgotScreen = () => {
   );
 };
 
-export default ForgotScreen;
+export default OtpScreen;

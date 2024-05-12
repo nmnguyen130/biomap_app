@@ -104,7 +104,6 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
       image_url: imageUrl as string,
       type: selectedType,
     };
-    console.log(data);
 
     const response = await addCreature(data, dataList);
 

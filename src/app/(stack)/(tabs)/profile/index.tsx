@@ -9,7 +9,7 @@ import { ButtonSession } from "@/components/profile";
 import { router } from "expo-router";
 
 const ProfileScreen = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#128F51" }}>
@@ -30,7 +30,7 @@ const ProfileScreen = () => {
 
         <View className="h-3/4 items-center">
           <FontText className="font-bold text-2xl mt-14">
-            Sasayaki Meijin
+            {user?.username}
           </FontText>
 
           <ScrollView className="w-full px-8">

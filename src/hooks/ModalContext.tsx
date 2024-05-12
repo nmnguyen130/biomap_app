@@ -16,7 +16,7 @@ const ModalContext = createContext<{
   displayMode: DisplayMode;
   isOpen: boolean;
   modalContent: ModalContent;
-  show(mode: DisplayMode, content?: ModalContent): void;
+  show(mode: DisplayMode, content?: ModalContent, onClose?: () => void): void;
   hide(): void;
   dataList: string[];
 }>({
@@ -35,11 +35,19 @@ const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     dialogType: MessageType.Success,
   });
   const [dataList, setDataList] = useState<string[]>([]);
+  const [onCloseCallback, setOnCloseCallback] = useState<() => void>();
 
-  const showModal = (mode: DisplayMode, content?: ModalContent) => {
+  const showModal = (
+    mode: DisplayMode,
+    content?: ModalContent,
+    onClose?: () => void
+  ) => {
     setDisplayMode(mode);
     if (content) {
       setModalContent(content);
+    }
+    if (onClose) {
+      setOnCloseCallback(() => onClose);
     }
 
     setIsOpen(true);
@@ -49,6 +57,10 @@ const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     setIsOpen(false);
     if (data) {
       setDataList(data);
+    }
+    if (onCloseCallback) {
+      onCloseCallback();
+      setOnCloseCallback(undefined);
     }
   };
 

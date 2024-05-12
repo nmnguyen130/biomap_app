@@ -45,7 +45,7 @@ const Dialog: React.FC<Props> = ({
 }) => {
   const selectedMessage = messageMap[dialogType];
 
-  const handleClose = () => {
+  const handleConfirm = () => {
     onClose();
   };
 
@@ -70,7 +70,7 @@ const Dialog: React.FC<Props> = ({
         <Text className="font-semibold text-center">{content}</Text>
 
         <TouchableOpacity
-          onPress={handleClose}
+          onPress={handleConfirm}
           className="drop-shadow-2xl bg-white border rounded-2xl py-2 w-10/12"
           style={{ borderColor: selectedMessage.color }}
         >

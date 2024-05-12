@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { View, Image, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -7,16 +7,17 @@ import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 import { useAuth } from "@/hooks/auth/AuthContext";
 
 import { IMAGES } from "@/constants";
-import { FontText, RectangleButton } from "@/components/common";
+import { FontText, PressableText, RectangleButton } from "@/components/common";
 import Dialog, { MessageType } from "@/components/common/modal/Dialog";
 
 const CheckEmailSubScreen = () => {
   const emailRef = useRef<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const { displayMode, isOpen, modalContent, show, hide } = useModal();
-  const { sendOtp } = useAuth();
+  const { sendLinkResetPass } = useAuth();
 
-  const handleSendOtp = async () => {
+  const handleSendLink = async () => {
     if (!emailRef.current) {
       show(DisplayMode.Dialog, {
         dialogType: MessageType.Alert,
@@ -26,7 +27,9 @@ const CheckEmailSubScreen = () => {
       return;
     }
 
-    const response = await sendOtp(emailRef.current);
+    setIsLoading(true);
+    const response = await sendLinkResetPass(emailRef.current);
+    setIsLoading(false);
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
@@ -35,7 +38,15 @@ const CheckEmailSubScreen = () => {
         content: response.msg,
       });
     } else {
-      router.push("(auth)/forgot");
+      show(
+        DisplayMode.Dialog,
+        {
+          dialogType: MessageType.Success,
+          title: "Gửi link thành công!",
+          content: "Vui lòng kiểm tra email của bạn!",
+        },
+        () => router.back()
+      );
     }
   };
 
@@ -60,10 +71,18 @@ const CheckEmailSubScreen = () => {
           />
 
           <RectangleButton
-            onPress={handleSendOtp}
+            onPress={handleSendLink}
             className="mt-10 -mx-2 py-4"
-            text="Gửi mã OTP"
+            text={isLoading ? "Đang gửi..." : "Tiếp tục"}
+            disabled={isLoading}
           />
+
+          <PressableText
+            className="self-center m-8 text-lg text-primary"
+            onPress={() => router.back()}
+          >
+            Quay lại
+          </PressableText>
         </View>
       </View>
 

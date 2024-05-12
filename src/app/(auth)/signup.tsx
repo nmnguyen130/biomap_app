@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -20,6 +20,8 @@ const SignupForm = () => {
 
   const { register } = useAuth();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const usernameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -40,11 +42,13 @@ const SignupForm = () => {
       return;
     }
 
+    setIsLoading(true);
     let response = await register(
       usernameRef.current,
       emailRef.current,
       passwordRef.current
     );
+    setIsLoading(false);
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
@@ -107,9 +111,10 @@ const SignupForm = () => {
 
           <View className="mt-3">
             <RectangleButton
-              className="mx-6"
-              text="Đăng ký"
               onPress={handleRegister}
+              className="mx-6"
+              text={isLoading ? "Vui lòng đợi..." : "Đăng ký"}
+              disabled={isLoading}
             />
           </View>
 

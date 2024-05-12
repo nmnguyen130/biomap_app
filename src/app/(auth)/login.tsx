@@ -26,6 +26,7 @@ const LoginForm = () => {
   const { login } = useAuth();
 
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -52,7 +53,9 @@ const LoginForm = () => {
       return;
     }
 
+    setIsLoading(true);
     const response = await login(emailRef.current, passwordRef.current);
+    setIsLoading(false);
 
     if (!response.success) {
       show(DisplayMode.Dialog, {
@@ -110,9 +113,10 @@ const LoginForm = () => {
           </View>
 
           <RectangleButton
-            className="mx-6"
-            text="Đăng nhập"
             onPress={handleLogin}
+            className="mx-6"
+            text={isLoading ? "Vui lòng đợi..." : "Đăng nhập"}
+            disabled={isLoading}
           />
 
           <View className="self-center justify-center items-center w-11/12 bg-gray-200 h-px rounded-full my-8">

@@ -52,7 +52,9 @@ interface AuthContextType {
     id: string,
     username: string
   ) => Promise<{ success: boolean; msg?: string; error?: Error }>;
-  sendOtp: (email: string) => Promise<{ success: boolean; msg?: string }>;
+  sendLinkResetPass: (
+    email: string
+  ) => Promise<{ success: boolean; msg?: string }>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -187,7 +189,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const sendOtp = async (email: string) => {
+  const sendLinkResetPass = async (email: string) => {
     try {
       await sendPasswordResetEmail(auth, email);
       return { success: true };
@@ -208,7 +210,7 @@ export const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
         logout,
         changePassword,
         changeUsername,
-        sendOtp,
+        sendLinkResetPass,
       }}
     >
       {children}
