@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
 import { useAuth } from "@/hooks/auth/AuthContext";
 
-import { ContributedList } from "@/components/contribute";
+import { ContributedList, CountBox } from "@/components/contribute";
 import { COLOR } from "@/constants";
 import { getNumberFormWithStatus } from "@/api/FormApi";
 import { FontText } from "@/components/common";
@@ -18,16 +18,16 @@ const UserContributed = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const [total, approved, pending] = await Promise.all([
+          getNumberFormWithStatus(user?.userId),
+          getNumberFormWithStatus(user?.userId, "approved"),
+          getNumberFormWithStatus(user?.userId, "pending"),
+        ]);
+
         setCounts({
-          total: (await getNumberFormWithStatus(user?.userId)) as number,
-          approved: (await getNumberFormWithStatus(
-            user?.userId,
-            "approved"
-          )) as number,
-          pending: (await getNumberFormWithStatus(
-            user?.userId,
-            "pending"
-          )) as number,
+          total,
+          approved,
+          pending,
         });
       } catch (error) {
         console.error("Error fetching counts:", error);
@@ -51,35 +51,11 @@ const UserContributed = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="flex-row justify-around mx-2.5 my-0.5">
-        <View className="flex-row w-max justify-around items-center border border-blue-500 rounded-lg px-1">
-          <MaterialCommunityIcons
-            className="px-1"
-            name="upload"
-            size={24}
-            color={COLOR.blue}
-          />
-          <Text className="text-blue-500 pe-3">Tổng: {counts.total}</Text>
-        </View>
-
-        <View className="flex-row w-1/4 justify-around items-center border border-lighter_primary rounded-lg p-3">
-          <MaterialCommunityIcons
-            name="checkbox-marked-circle-outline"
-            size={24}
-            color={COLOR.lighter_primary}
-          />
-          <Text className="text-lighter_primary">{counts.approved}</Text>
-        </View>
-
-        <View className="flex-row w-1/4 justify-around items-center border border-yellow-500 rounded-lg p-3">
-          <MaterialCommunityIcons
-            name="progress-clock"
-            size={24}
-            color={COLOR.orange}
-          />
-          <Text className="text-yellow-500">{counts.pending}</Text>
-        </View>
-      </View>
+      <CountBox
+        total={counts.total}
+        approved={counts.approved}
+        pending={counts.pending}
+      />
 
       <ContributedList />
     </SafeAreaView>

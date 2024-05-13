@@ -82,10 +82,7 @@ export const getCreaturesFromProvince = async (
       ? { animal_list: data.animal_list, plant_list: data.plant_list }
       : undefined;
   } catch (error) {
-    console.error(
-      "Error fetching creatures from province:",
-      (error as Error).message
-    );
+    console.error("Error fetching creatures from province:", error);
     throw error;
   }
 };
@@ -109,7 +106,7 @@ export const getAllCreatures = async () => {
     ]);
     return { animal_list: animalList, plant_list: plantList };
   } catch (error) {
-    console.error("Error fetching all creatures:", (error as Error).message);
+    console.error("Error fetching all creatures:", error);
     throw error;
   }
 };
@@ -178,10 +175,7 @@ export const getCreatureInfor = async (creatureName: string, type: string) => {
       return creatureData;
     }
   } catch (error) {
-    console.error(
-      "Error fetching creature information:",
-      (error as Error).message
-    );
+    console.error("Error fetching creature information:", error);
     throw error;
   }
 };
@@ -196,10 +190,7 @@ export const getProvincesContainCreature = async (
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => doc.data().name as string);
   } catch (error) {
-    console.error(
-      "Error fetching provinces contain creature:",
-      (error as Error).message
-    );
+    console.error("Error fetching provinces contain creature:", error);
     throw error;
   }
 };
@@ -247,7 +238,7 @@ export const deleteCreature = async (creatureData: DocumentData) => {
 
     return true;
   } catch (error) {
-    console.error("Error deleting form:", (error as Error).message);
+    console.error("Error deleting form:", error);
     return false;
   }
 };
@@ -319,7 +310,7 @@ const uploadImageToFirebase = async (
       );
     });
   } catch (error) {
-    console.error("Error uploading image:", (error as Error).message);
+    console.error("Error uploading image:", error);
     throw error;
   }
 };
@@ -329,6 +320,6 @@ const deleteImage = (imageUrl: string) => {
     const imageRef = ref(storage, imageUrl);
     deleteObject(imageRef);
   } catch (error) {
-    console.error("Error deleting image:", (error as Error).message);
+    console.error("Error deleting image:", error);
   }
 };

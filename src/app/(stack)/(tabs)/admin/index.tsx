@@ -10,10 +10,11 @@ import {
   RectangleButton,
 } from "@/components/common";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { CreatureManager } from "@/components/admin";
+import { CreatureManager, FormManager } from "@/components/admin";
 
 const AdminScreen = () => {
-  const modalizeRef = useRef<BottomSheetModal>(null);
+  const creatureModalizeRef = useRef<BottomSheetModal>(null);
+  const formModalizeRef = useRef<BottomSheetModal>(null);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -61,11 +62,11 @@ const AdminScreen = () => {
           {/* Button Group */}
           <View className="w-11/12 gap-4 mb-6">
             <RectangleButton
-              onPress={() => modalizeRef.current?.present()}
+              onPress={() => creatureModalizeRef.current?.present()}
               text="Thông tin sinh vật"
             ></RectangleButton>
             <RectangleButton
-              onPress={() => {}}
+              onPress={() => formModalizeRef.current?.present()}
               text="Đóng góp của người dùng"
             ></RectangleButton>
           </View>
@@ -104,8 +105,12 @@ const AdminScreen = () => {
         </View>
       </ScrollView>
 
-      <CustomBottomSheet bottomsheetRef={modalizeRef} snapPoint={[745]}>
-        <CreatureManager onClose={() => modalizeRef.current?.close()} />
+      <CustomBottomSheet bottomsheetRef={creatureModalizeRef} snapPoint={[745]}>
+        <CreatureManager onClose={() => creatureModalizeRef.current?.close()} />
+      </CustomBottomSheet>
+
+      <CustomBottomSheet bottomsheetRef={formModalizeRef} snapPoint={[745]}>
+        <FormManager onClose={() => formModalizeRef.current?.close()} />
       </CustomBottomSheet>
     </SafeAreaView>
   );

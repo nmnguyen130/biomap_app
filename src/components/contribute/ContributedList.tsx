@@ -4,20 +4,27 @@ import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { DocumentData } from "@firebase/firestore";
 
-import { useAuth } from "@/hooks/auth/AuthContext";
+import { Role, useAuth } from "@/hooks/auth/AuthContext";
 import { getFormsDataByUserId } from "@/api/FormApi";
 
-const ContributedList = () => {
+type Props = {
+  onCloseModal?: () => void;
+};
+
+const ContributedList = ({ onCloseModal }: Props) => {
   const { user } = useAuth();
   const [formsData, setFormsData] = useState<DocumentData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getFormsDataByUserId(user?.userId as string);
+        const data =
+          user?.role == Role.USER
+            ? await getFormsDataByUserId(user?.userId as string)
+            : await getFormsDataByUserId();
         setFormsData(data);
       } catch (error) {
-        console.error("Error get form data by UserID:", error);
+        console.error(`Error get form data by ${user?.role}:`, error);
       }
     };
 
@@ -34,7 +41,8 @@ const ContributedList = () => {
               <View className="p-3.5">
                 <Text className="text-lg font-medium">{item.name}</Text>
                 <Text className="text-gray-400 text-xs">
-                  Posted: {item.submissionDate}
+                  Posted {user?.role === Role.USER ? "" : `by ${item.username}`}
+                  : {item.submissionDate}
                 </Text>
               </View>
             </View>
@@ -42,8 +50,13 @@ const ContributedList = () => {
               <TouchableOpacity
                 className="bg-primary items-center justify-center h-11 w-11 rounded-full"
                 onPress={() => {
+                  onCloseModal && onCloseModal();
                   router.push({
-                    pathname: "(tabs)/contribute/[id]",
+                    pathname: `(tabs)/${
+                      user?.role === Role.USER
+                        ? "contribute/[id]"
+                        : "admin/[formId]"
+                    }`,
                     params: { formId: item.formId },
                   });
                 }}

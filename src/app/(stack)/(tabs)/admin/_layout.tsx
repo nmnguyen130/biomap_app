@@ -8,6 +8,10 @@ const AdminLayout = () => {
         name="index"
         options={{ headerTitle: "Admin", headerShown: false }}
       />
+      <Stack.Screen
+        name="[formId]"
+        options={{ headerTitle: "FormData", headerShown: false }}
+      />
     </Stack>
   );
 };

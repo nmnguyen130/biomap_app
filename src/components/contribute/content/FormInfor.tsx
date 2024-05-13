@@ -8,6 +8,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 import useFormInput from "@/hooks/form/useFormInput";
 import { deleteForm, updateFormInformation } from "@/api/FormApi";
+import { Role, useAuth } from "@/hooks/auth/AuthContext";
 
 import { ActionButton, FontText, PressableText } from "@/components/common";
 import { DialogOption, MessageType } from "@/components/common/modal/Dialog";
@@ -29,6 +30,13 @@ const FormInfor: React.FC<Props> = ({
 }) => {
   const [isEdit, setIsEdit] = useState(false);
   const { show, dataList } = useModal();
+  const { user } = useAuth();
+
+  const [state, setState] = useState("hidden");
+
+  const toggleState = () => {
+    state === "hidden" ? setState("") : setState("hidden");
+  };
 
   const provincesText = dataList.join(", ");
   const {
@@ -148,6 +156,7 @@ const FormInfor: React.FC<Props> = ({
                 ? "bg-[#FFF9F2] border-[#EECEB0] text-[#CD7B2E]"
                 : "bg-[#D7E0DD] border-[#B8C6C1] text-[#1D3A2F]"
             }`}
+            onPress={() => (user?.role === Role.ADMIN ? toggleState() : {})}
           >
             {formData.status === "pending"
               ? "Đang chờ duyệt"
@@ -155,6 +164,23 @@ const FormInfor: React.FC<Props> = ({
               ? "Từ chối"
               : "Đã duyệt"}
           </PressableText>
+
+          <View
+            className={`${state} absolute border w-1/2 items-center bg-white rounded-lg top-11 -right-2.5 z-10 p-3 gap-2`}
+          >
+            <TouchableOpacity
+              onPress={toggleState}
+              className="rounded-md w-11/12 py-3 bg-primary items-center"
+            >
+              <FontText className="text-white">Chấp nhận</FontText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={toggleState}
+              className="rounded-md w-11/12 py-3 bg-red-500 items-center"
+            >
+              <FontText className="text-white">Từ chối</FontText>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View className="flex-row items-center gap-2">
@@ -165,11 +191,13 @@ const FormInfor: React.FC<Props> = ({
             isEdit={isEdit}
           />
 
-          <ActionButton
-            type="delete"
-            onPress={handlerDelete}
-            className="border-red-500 bg-red-100"
-          />
+          {user?.role === Role.USER && (
+            <ActionButton
+              type="delete"
+              onPress={handlerDelete}
+              className="border-red-500 bg-red-100"
+            />
+          )}
         </View>
       </View>
 

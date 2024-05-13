@@ -13,6 +13,7 @@ import { deleteCreature, updateCreatureInformation } from "@/api/CreatureApi";
 import PressableText from "../PressableText";
 import ActionButton from "../ActionButton";
 import FontText from "../FontText";
+import { DialogOption, MessageType } from "../modal/Dialog";
 
 type Props = {
   creatureData: DocumentData;
@@ -135,8 +136,19 @@ const CreatureInfor: React.FC<Props> = ({
   };
 
   const handlerDelete = async () => {
-    const success = await deleteCreature(creatureData);
-    if (success) router.back();
+    show(
+      DisplayMode.Dialog,
+      {
+        dialogOption: DialogOption.Double,
+        dialogType: MessageType.Error,
+        title: "Cảnh báo!",
+        content: "Bạn có chắc chắn muốn xóa không?",
+      },
+      async () => {
+        const success = await deleteCreature(creatureData);
+        if (success) router.back();
+      }
+    );
   };
 
   return (

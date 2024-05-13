@@ -16,6 +16,7 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "@firebase/storage";
+import { getUsername } from "./UserApi";
 
 const tableName = "Forms";
 
@@ -54,7 +55,7 @@ export const getNumberFormWithStatus = async (
     const number = snapshot.docs.length;
     return number;
   } catch (error) {
-    console.error("Error fetching number of forms:", (error as Error).message);
+    console.error("Error fetching number of forms:", error);
     throw error;
   }
 };
@@ -67,26 +68,32 @@ export const getFormDataById = async (formID: string) => {
 
     return { ...forms, id: formID };
   } catch (error) {
-    console.error("Error fetching form data by ID:", (error as Error).message);
+    console.error("Error fetching form data by ID:", error);
     return {};
   }
 };
 
-export const getFormsDataByUserId = async (userId: string) => {
+export const getFormsDataByUserId = async (userId?: string) => {
   try {
-    const q = query(formRef, where("userId", "==", userId));
+    const q = userId
+      ? query(formRef, where("userId", "==", userId))
+      : query(formRef);
     const snapshot = await getDocs(q);
 
-    const forms = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      formId: doc.id,
-    }));
+    const forms = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const userData = doc.data();
+        const username = await getUsername(userData.userId);
+        return {
+          ...userData,
+          username,
+          formId: doc.id,
+        };
+      })
+    );
     return forms;
   } catch (error) {
-    console.error(
-      "Error fetching form data by UserID:",
-      (error as Error).message
-    );
+    console.error("Error fetching form data by UserID:", error);
     return [];
   }
 };
@@ -135,7 +142,7 @@ export const deleteForm = async (formData: DocumentData) => {
 
     return true;
   } catch (error) {
-    console.error("Error deleting form:", (error as Error).message);
+    console.error("Error deleting form:", error);
     return false;
   }
 };
@@ -167,7 +174,7 @@ const uploadImageToFirebase = async (
       );
     });
   } catch (error) {
-    console.error("Error uploading image:", (error as Error).message);
+    console.error("Error uploading image:", error);
     throw error;
   }
 };
@@ -177,6 +184,6 @@ const deleteImage = (imageUrl: string) => {
     const imageRef = ref(storage, imageUrl);
     deleteObject(imageRef);
   } catch (error) {
-    console.error("Error deleting image:", (error as Error).message);
+    console.error("Error deleting image:", error);
   }
 };
