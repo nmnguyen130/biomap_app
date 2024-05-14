@@ -1,5 +1,6 @@
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
+  clamp,
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
@@ -33,7 +34,7 @@ const MapGesture: React.FC<Props> = ({ width, height, children }) => {
 
   const pinch = Gesture.Pinch()
     .onUpdate((e) => {
-      scale.value = savedScale.value * e.scale;
+      scale.value = clamp(savedScale.value * e.scale, 0.6, 3.0);
       center.value = {
         x: width / 2,
         y: height / 2,

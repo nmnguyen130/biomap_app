@@ -24,13 +24,14 @@ const provincePaths = PROVINCES.map(geoPath().projection(projection));
 type Props = {
   width: number;
   height: number;
+  showToast: (message: string) => void;
 };
 
-const MapPath: React.FC<Props> = ({ width, height }) => {
+const MapPath: React.FC<Props> = ({ width, height, showToast }) => {
   const [pathList, setPathList] = useState<ReactElement[]>([]);
   const selectedPath = useRef<number>(-1);
 
-  const handlePathTap = (index: number) => {
+  const handlePathTap = async (index: number) => {
     const provinceName = PROVINCES[index]?.properties?.Name_VI || "";
     setPathList((prevList) => {
       const newList = [...prevList];
@@ -50,6 +51,10 @@ const MapPath: React.FC<Props> = ({ width, height }) => {
     router.push(`(modals)/${provinceName}`);
   };
 
+  const handlePathLongPress = async (index: number) => {
+    showToast(PROVINCES[index].properties.Name_VI);
+  };
+
   useEffect(() => {
     const paths = provincePaths.map((path: string, index: number) => {
       return (
@@ -60,6 +65,7 @@ const MapPath: React.FC<Props> = ({ width, height }) => {
           stroke={"gray"}
           strokeWidth={0.8}
           onPress={() => handlePathTap(index)}
+          onLongPress={() => handlePathLongPress(index)}
         />
       );
     });

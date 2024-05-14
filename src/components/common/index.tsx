@@ -7,6 +7,8 @@ import CustomModal from "./modal/CustomModal";
 import Dialog from "./modal/Dialog";
 import ImagePickerModal from "./modal/ImagePickerModal";
 
+import Toast from "./popop/Toast";
+
 import ActionButton from "./ActionButton";
 import BiomapLogo from "./BiomapLogo";
 import FontText from "./FontText";
@@ -25,6 +27,7 @@ export {
   CustomModal,
   Dialog,
   ImagePickerModal,
+  Toast,
   ActionButton,
   BiomapLogo,
   FontText,

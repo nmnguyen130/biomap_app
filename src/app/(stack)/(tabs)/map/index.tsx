@@ -2,12 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { CustomBottomSheet, FontText, Selector } from "@/components/common";
+import {
+  CustomBottomSheet,
+  FontText,
+  Selector,
+  Toast,
+} from "@/components/common";
 import { MapGesture, MapPath } from "@/components/map";
 import { FilterButton, SearchInput, SearchResults } from "@/components/search";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SelectItem } from "@/components/common/input/Selector";
 import { getAllCreatures } from "@/api/CreatureApi";
+import toast from "@/utils/toast";
 
 export type SearchResultType = "all" | "animal" | "plant";
 
@@ -32,13 +38,20 @@ const MapScreen = () => {
     setShowResults(value.trim().length > 0);
   };
 
+  const showToast = (message: string) => {
+    toast.infor({
+      message: message,
+      duration: 5000,
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const creatures = await getAllCreatures();
         if (creatures) setCreatureList(creatures);
       } catch (error) {
-        console.error("Error fetching counts:", (error as Error).message);
+        console.error("Error fetching counts:", error);
       }
     };
 
@@ -59,7 +72,7 @@ const MapScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <MapGesture width={width} height={height}>
-        <MapPath width={width} height={height} />
+        <MapPath width={width} height={height} showToast={showToast} />
       </MapGesture>
 
       <View className="flex-row items-center bg-white rounded-full mx-2 absolute top-10">
@@ -92,6 +105,8 @@ const MapScreen = () => {
           <SelectItem name="Thực vật" value="plant" />
         </Selector>
       </CustomBottomSheet>
+
+      <Toast />
     </SafeAreaView>
   );
 };
