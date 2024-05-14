@@ -107,16 +107,19 @@ const Form: React.FC<Props> = ({ openModal, imageUrl }) => {
 
     setIsLoading(true);
     const data = {
-      id: scientificName,
       name,
       characteristic,
       ...(selectedType === "animal" && { behavior }),
       habitat,
       image_url: imageUrl as string,
-      type: selectedType,
     };
 
-    const response = await addCreature(data, dataList);
+    const response = await addCreature(
+      scientificName,
+      selectedType,
+      data,
+      dataList
+    );
 
     setIsLoading(false);
     if (response.success) {

@@ -8,7 +8,10 @@ import { DisplayMode, ModalProvider, useModal } from "@/hooks/ModalContext";
 import { useAuth } from "@/hooks/auth/AuthContext";
 
 import { IMAGES } from "@/constants";
-import Dialog, { MessageType } from "@/components/common/modal/Dialog";
+import Dialog, {
+  DialogOption,
+  MessageType,
+} from "@/components/common/modal/Dialog";
 import { FontText, RectangleButton } from "@/components/common";
 import { ChangePassModal } from "@/components/profile";
 import { auth } from "@/utils/firebase";
@@ -30,6 +33,7 @@ const EditProfile = () => {
       setIsLoading(false);
       if (response.success) {
         show(DisplayMode.Dialog, {
+          dialogOption: DialogOption.Single,
           dialogType: MessageType.Success,
           title: "Thành công",
           content: "Đã thay đổi tên đăng nhập!",
@@ -112,6 +116,7 @@ const EditProfile = () => {
 
       {isOpen && displayMode === DisplayMode.Dialog && (
         <Dialog
+          option={modalContent.dialogOption}
           dialogType={modalContent.dialogType}
           isVisible={isOpen}
           onClose={hide}

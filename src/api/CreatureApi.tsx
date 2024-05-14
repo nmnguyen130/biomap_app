@@ -33,13 +33,11 @@ type CreatureLists = {
 };
 
 export type Creature = {
-  id: string;
   name: string;
   characteristic?: string;
   behavior?: string;
   habitat?: string;
   image_url: string;
-  type?: string;
 };
 
 type CreatureDataUpdate = {
@@ -50,18 +48,29 @@ type CreatureDataUpdate = {
   provinces: string[];
 };
 
-export const addCreature = async (data: Creature, provinces: string[]) => {
+/** @type {any} */
+const metadata = {
+  contentType: "image/jpeg",
+};
+
+export const addCreature = async (
+  id: string,
+  type: string,
+  data: Creature,
+  provinces: string[]
+) => {
   try {
-    const table = data.type === "animal" ? "Animals" : "Plants";
-    const imageUrl = `${data.type}/${data.id}.${data.image_url
+    const table = type === "animal" ? "Animals" : "Plants";
+    const imageUrl = `${type}/${id}.${data.image_url
+      .split("?")[0]
       .split(".")
       .pop()}`;
-    const fieldToUpdate = data.type === "animal" ? "animal_list" : "plant_list";
+    const fieldToUpdate = type === "animal" ? "animal_list" : "plant_list";
 
     await Promise.all([
-      uploadImageToFirebase(data.type, data.id, data.image_url),
-      setDoc(doc(db, table, data.id), { ...data, image_url: imageUrl }),
-      addCreatureInProvince(data.id, fieldToUpdate, provinces),
+      uploadImageToFirebase(type, id, data.image_url),
+      setDoc(doc(db, table, id), { ...data, image_url: imageUrl }),
+      addCreatureInProvince(id, fieldToUpdate, provinces),
     ]);
 
     return { success: true };
@@ -286,14 +295,14 @@ const uploadImageToFirebase = async (
 ) => {
   const imageRef = ref(
     storage,
-    `${type}/${scientificName}.${imageURL.split(".").pop()}`
+    `${type}/${scientificName}.${imageURL.split("?")[0].split(".").pop()}`
   );
 
   try {
     const response = await fetch(imageURL);
     const blob = await response.blob();
 
-    const uploadTask = uploadBytesResumable(imageRef, blob);
+    const uploadTask = uploadBytesResumable(imageRef, blob, metadata);
 
     return new Promise((resolve, reject) => {
       uploadTask.on(

@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/auth/AuthContext";
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 
 import { CustomModal, FontText, RectangleButton } from "@/components/common";
-import { MessageType } from "@/components/common/modal/Dialog";
+import { DialogOption, MessageType } from "@/components/common/modal/Dialog";
 
 type Props = {
   modalVisible: boolean;
@@ -23,6 +23,7 @@ const ChangePassModal: React.FC<Props> = ({ modalVisible, onDismiss }) => {
   const handleChangePassword = async () => {
     if (!oldPass.current || !newPass.current || !newPassRewrite.current) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Thay đổi mật khẩu",
         content: "Vui lòng không được để trống!",
@@ -30,6 +31,7 @@ const ChangePassModal: React.FC<Props> = ({ modalVisible, onDismiss }) => {
       return;
     } else if (newPass.current !== newPassRewrite.current) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Alert,
         title: "Mật khẩu không trùng khớp",
         content: "Vui lòng kiểm tra lại!",
@@ -40,6 +42,7 @@ const ChangePassModal: React.FC<Props> = ({ modalVisible, onDismiss }) => {
     const response = await changePassword(oldPass.current, newPass.current);
     if (response.success) {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Success,
         title: "Thành công",
         content: "Đã thay đổi mật khẩu!",
@@ -47,6 +50,7 @@ const ChangePassModal: React.FC<Props> = ({ modalVisible, onDismiss }) => {
       if (!isOpen) onDismiss();
     } else {
       show(DisplayMode.Dialog, {
+        dialogOption: DialogOption.Single,
         dialogType: MessageType.Error,
         title: "Sai mật khẩu",
         content: "Có vẻ bạn đã nhập sai mật khẩu. Vui lòng kiểm tra lại!",

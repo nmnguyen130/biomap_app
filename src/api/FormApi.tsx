@@ -20,7 +20,7 @@ import { getUsername } from "./UserApi";
 
 const tableName = "Forms";
 
-interface FormData {
+type FormData = {
   userId?: string;
   scientificName: string;
   name: string;
@@ -32,7 +32,9 @@ interface FormData {
   type?: string;
   submissionDate?: string;
   status?: string;
-}
+};
+
+type StatusType = "pending" | "approved" | "rejected";
 
 export const getNumberFormWithStatus = async (
   userId?: string,
@@ -127,6 +129,17 @@ export const updateFormInformation = async (formId: string, data: FormData) => {
     }
 
     await updateDoc(docRef, { ...data });
+    return { success: true };
+  } catch (error) {
+    return { success: false, msg: (error as Error).message };
+  }
+};
+
+export const updateFormStatus = async (formId: string, status: StatusType) => {
+  try {
+    const docRef = doc(db, tableName, formId);
+
+    await updateDoc(docRef, { status });
     return { success: true };
   } catch (error) {
     return { success: false, msg: (error as Error).message };

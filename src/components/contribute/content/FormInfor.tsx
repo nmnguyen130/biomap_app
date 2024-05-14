@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, ScrollView, TouchableOpacity, TextInput } from "react-native";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -7,11 +7,16 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { DisplayMode, useModal } from "@/hooks/ModalContext";
 import useFormInput from "@/hooks/form/useFormInput";
-import { deleteForm, updateFormInformation } from "@/api/FormApi";
+import {
+  deleteForm,
+  updateFormInformation,
+  updateFormStatus,
+} from "@/api/FormApi";
 import { Role, useAuth } from "@/hooks/auth/AuthContext";
 
 import { ActionButton, FontText, PressableText } from "@/components/common";
 import { DialogOption, MessageType } from "@/components/common/modal/Dialog";
+import { addCreature } from "@/api/CreatureApi";
 
 interface Props {
   formData: DocumentData;
@@ -141,6 +146,74 @@ const FormInfor: React.FC<Props> = ({
     );
   };
 
+  const handleAccept = async () => {
+    toggleState();
+    show(
+      DisplayMode.Dialog,
+      {
+        dialogOption: DialogOption.Double,
+        dialogType: MessageType.Alert,
+        title: "Nhắc nhở chấp nhận!",
+        content: "Bạn có chắc chắn muốn chấp nhận biểu mẫu này",
+      },
+      async () => {
+        const data = {
+          name: formData.name,
+          characteristic: formData.characteristic,
+          ...(formData.type === "animal" && { behavior: formData.behavior }),
+          habitat: formData.habitat,
+          image_url: tempImageUrl as string,
+        };
+        await Promise.all([
+          updateFormStatus(formData.id, "approved"),
+          addCreature(
+            formData.scientificName,
+            formData.type,
+            data,
+            dataList.length !== 0 ? dataList : formData.provinces
+          ),
+        ]);
+
+        setRestart();
+      }
+    );
+  };
+
+  const handleReject = async () => {
+    toggleState();
+    show(
+      DisplayMode.Dialog,
+      {
+        dialogOption: DialogOption.Double,
+        dialogType: MessageType.Alert,
+        title: "Nhắc nhở từ chối!",
+        content: "Bạn có chắc chắn muốn từ chối biểu mẫu này",
+      },
+      async () => {
+        await updateFormStatus(formData.id, "rejected");
+        setRestart();
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (user?.role === Role.USER && formData.status === "rejected") {
+      show(
+        DisplayMode.Dialog,
+        {
+          dialogOption: DialogOption.Double,
+          dialogType: MessageType.Alert,
+          title: "Đã từ chối!",
+          content: "Quản trị viên đã từ chối biểu mẫu này!\n Xóa biểu mẫu?",
+        },
+        async () => {
+          const success = await deleteForm(formData);
+          if (success) router.replace("(tabs)/contribute");
+        }
+      );
+    }
+  }, []);
+
   return (
     <>
       {/* Header */}
@@ -154,13 +227,15 @@ const FormInfor: React.FC<Props> = ({
             className={`rounded-md px-2 p-2 border ${
               formData.status === "pending"
                 ? "bg-[#FFF9F2] border-[#EECEB0] text-[#CD7B2E]"
-                : "bg-[#D7E0DD] border-[#B8C6C1] text-[#1D3A2F]"
+                : formData.status === "rejected"
+                ? "bg-[#f0cbc1] border-[#f07f77] text-[#f95353]"
+                : "bg-[#9cf19c] border-[#5da86e] text-[#359d35]"
             }`}
             onPress={() => (user?.role === Role.ADMIN ? toggleState() : {})}
           >
             {formData.status === "pending"
               ? "Đang chờ duyệt"
-              : formData.status === "reject"
+              : formData.status === "rejected"
               ? "Từ chối"
               : "Đã duyệt"}
           </PressableText>
@@ -169,13 +244,13 @@ const FormInfor: React.FC<Props> = ({
             className={`${state} absolute border w-1/2 items-center bg-white rounded-lg top-11 -right-2.5 z-10 p-3 gap-2`}
           >
             <TouchableOpacity
-              onPress={toggleState}
+              onPress={handleAccept}
               className="rounded-md w-11/12 py-3 bg-primary items-center"
             >
               <FontText className="text-white">Chấp nhận</FontText>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={toggleState}
+              onPress={handleReject}
               className="rounded-md w-11/12 py-3 bg-red-500 items-center"
             >
               <FontText className="text-white">Từ chối</FontText>
@@ -187,11 +262,13 @@ const FormInfor: React.FC<Props> = ({
           <ActionButton
             type="edit"
             onPress={toggleEdit}
-            className="opacity-100"
+            className={`opacity-100 ${
+              formData.status !== "pending" ? "hidden" : ""
+            }`}
             isEdit={isEdit}
           />
 
-          {user?.role === Role.USER && (
+          {(user?.role === Role.USER || formData.status === "rejected") && (
             <ActionButton
               type="delete"
               onPress={handlerDelete}
