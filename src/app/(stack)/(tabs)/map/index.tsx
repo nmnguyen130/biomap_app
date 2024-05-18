@@ -13,7 +13,7 @@ import { FilterButton, SearchInput, SearchResults } from "@/components/search";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SelectItem } from "@/components/common/input/Selector";
 import { getAllCreatures } from "@/api/CreatureApi";
-import toast from "@/utils/toast";
+import { toast } from "@/utils/toast";
 
 export type SearchResultType = "all" | "animal" | "plant";
 

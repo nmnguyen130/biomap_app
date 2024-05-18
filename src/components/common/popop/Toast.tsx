@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { DeviceEventEmitter, TouchableOpacity, View } from "react-native";
+import {
+  DeviceEventEmitter,
+  Platform,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, { FadeInUp, FadeOutUp } from "react-native-reanimated";
 
 import FontText from "../FontText";
@@ -16,23 +22,33 @@ const Toast = () => {
   const [toastData, setToastData] = useState<ToastDataType | null>(null);
   const timeOutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const closeToast = () => {
-    setToastData(null);
-    clearInterval(timeOutRef.current!);
+  const onNewToast = (data: ToastDataType) => {
+    if (Platform.OS === "android" && data.useDefaultNativeToast) {
+      // Show default toast from react-native
+      return ToastAndroid.show(data.message, ToastAndroid.LONG);
+    }
+    setToastData(data);
   };
 
-  // Timer countdown
+  const closeToast = () => {
+    setToastData(null);
+    if (timeOutRef.current) {
+      clearInterval(timeOutRef.current);
+      timeOutRef.current = null;
+    }
+  };
+
   useEffect(() => {
-    if (toastData) {
+    if (toastData?.duration) {
       timeOutRef.current = setInterval(() => {
-        if (toastData.duration && toastData.duration === 0) {
-          closeToast();
-        } else if (toastData.duration) {
-          setToastData((prevData) => ({
-            ...prevData!,
-            duration: prevData!.duration! - 1000,
-          }));
-        }
+        setToastData((prevData) => {
+          if (!prevData) return null;
+          if (prevData.duration! <= 1000) {
+            closeToast();
+            return null;
+          }
+          return { ...prevData, duration: prevData.duration! - 1000 };
+        });
       }, 1000);
     }
 
@@ -43,17 +59,14 @@ const Toast = () => {
 
   // Catch the SHOW_TOAST_EVENT_NAME event
   useEffect(() => {
-    const listener = (data: ToastDataType) => setToastData(data);
-    DeviceEventEmitter.addListener(SHOW_TOAST_EVENT_NAME, listener);
+    DeviceEventEmitter.addListener(SHOW_TOAST_EVENT_NAME, onNewToast);
 
     return () => {
       DeviceEventEmitter.removeAllListeners();
     };
   }, []);
 
-  if (!toastData) {
-    return null;
-  }
+  if (!toastData) return null;
 
   const { message, subMessage, type } = toastData;
 

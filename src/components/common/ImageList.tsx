@@ -98,6 +98,7 @@ const ImageList: React.FC<Props> = ({ provinceName = "", onCloseModal }) => {
                 router.push({
                   pathname: "(data)/[creatureName]",
                   params: {
+                    ///@ts-ignore
                     creatureName: item.id,
                     type: selectedType === "animal" ? "Animals" : "Plants",
                   },

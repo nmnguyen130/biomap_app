@@ -13,7 +13,7 @@ export interface ToastDataType extends ToastOptionType {
   type: string;
 }
 
-const toast = {
+export const toast = {
   infor: (options: ToastOptionType) => {
     DeviceEventEmitter.emit(SHOW_TOAST_EVENT_NAME, {
       ...options,
@@ -33,5 +33,3 @@ const toast = {
     });
   },
 };
-
-export default toast;
