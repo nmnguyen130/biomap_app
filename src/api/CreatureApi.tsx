@@ -53,6 +53,19 @@ const metadata = {
   contentType: "image/jpeg",
 };
 
+export const countNummberOfCreature = async (tableName: string) => {
+  try {
+    const q = tableName === "Animals" ? query(animalRef) : query(plantRef);
+    const snapshot = await getDocs(q);
+
+    const number = snapshot.docs.length;
+    return number;
+  } catch (error) {
+    console.error(`Error fetching number of ${tableName}:`, error);
+    throw error;
+  }
+};
+
 export const addCreature = async (
   id: string,
   type: string,

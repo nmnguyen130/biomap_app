@@ -49,7 +49,7 @@ const CreatureInfor: React.FC<Props> = ({
 
   const provincesText = dataList.join(", ");
   const getRenderInformation = () => {
-    const commonData = [
+    let commonData = [
       { id: "Tên", input: NameInput, content: creatureData.name },
       {
         id: "Đặc điểm",
@@ -94,13 +94,13 @@ const CreatureInfor: React.FC<Props> = ({
     ];
 
     if (!isEdit) {
-      return commonData.filter(
+      commonData = commonData.filter(
         (data) => data.id !== "Tên khoa học" && data.id !== "Tên"
       );
     }
 
     if (creatureData.type === "Plants") {
-      return commonData.filter((data) => data.id !== "Tập tính");
+      commonData = commonData.filter((data) => data.id !== "Tập tính");
     }
 
     return commonData;
@@ -237,6 +237,9 @@ const CreatureInfor: React.FC<Props> = ({
             </View>
           )}
         </View>
+        <FontText className="ms-auto me-4 text-gray-500">
+          @Sinh vật rừng Việt Nam
+        </FontText>
       </ScrollView>
     </View>
   );
